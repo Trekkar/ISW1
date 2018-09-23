@@ -170,7 +170,6 @@ checkInCustomerBook: aCustomerBook NumberOfActiveUsers: aNumberOfActiveUsers and
 		assert: aNumberOfCustomers
 		equals: aCustomerBook numberOfCustomers.! !
 
-
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
 Object subclass: #CustomerBook
@@ -231,23 +230,23 @@ numberOfSuspendedCustomers
 	
 	^suspended size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:01:17'!
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 14:28:53'!
 removeACustomerFromAllCustomerCategories: aCollectionOfCustomerCategories WithTheName: aName
 	aCollectionOfCustomerCategories do: [ :aCustomerCategory | | name |
 		name _ self
 			removeCustomerIfExistsIn: aCustomerCategory
 			withName: aName.
-		name ifNotNil: [ ^ name ]].
+		name ifNotEmpty: [ ^ name ]].
 	^ NotFound signal.! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:01:17'!
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 14:25:29'!
 removeCustomerIfExistsIn: aCustomerCategory withName: aName
 	| customer |
 	customer _ aCustomerCategory
 		detect: [ :aCustomer |
 			aCustomer = aName ]
-		ifNone: [ ].
-	customer ifNotNil: [ aCustomerCategory remove: customer ].
+		ifNone: [ customer := '' ].
+	customer ifNotEmpty: [ aCustomerCategory remove: customer ].
 	^ customer.! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:00:54'!
