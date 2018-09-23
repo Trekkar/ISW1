@@ -205,15 +205,14 @@ addCustomerNamed: aName
 	
 	customers add: aName ! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 11:20:40'!
-giveAllRegisteredCustomers 
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 17:56:01'!
+allCustomerCategories
 	"Mensaje creado para devolver todos los clientes registrados. Eventualmente si se agrega una nueva categoria de clientes habria que agregarlos aqui"
-
-	|allCustomers |
-	allCustomers := OrderedCollection new . 
-	allCustomers add: customers . 
-	allCustomers add: suspended .
-	^allCustomers .! !
+	| allCustomers |
+	allCustomers _ OrderedCollection new.
+	allCustomers add: customers.
+	allCustomers add: suspended.
+	^ allCustomers.! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'NR 9/19/2018 17:36:57'!
 numberOfActiveCustomers
@@ -230,30 +229,12 @@ numberOfSuspendedCustomers
 	
 	^suspended size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 14:28:53'!
-removeACustomerFromAllCustomerCategories: aCollectionOfCustomerCategories WithTheName: aName
-	aCollectionOfCustomerCategories do: [ :aCustomerCategory | | name |
-		name _ self
-			removeCustomerIfExistsIn: aCustomerCategory
-			withName: aName.
-		name ifNotEmpty: [ ^ name ]].
-	^ NotFound signal.! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 14:25:29'!
-removeCustomerIfExistsIn: aCustomerCategory withName: aName
-	| customer |
-	customer _ aCustomerCategory
-		detect: [ :aCustomer |
-			aCustomer = aName ]
-		ifNone: [ customer := '' ].
-	customer ifNotEmpty: [ aCustomerCategory remove: customer ].
-	^ customer.! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:00:54'!
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 18:26:14'!
 removeCustomerNamed: aName
-	^ self
-		removeACustomerFromAllCustomerCategories: self giveAllRegisteredCustomers
-		WithTheName: aName.! !
+
+		self allCustomerCategories do:[:aCustomerCategory |  aCustomerCategory detect:[:aCustomer | aCustomer = aName ] ifFound: [:aCustomer |  ^aCustomerCategory remove: aCustomer ] ifNone: []].
+		^NotFound  signal.
+		! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:52'!
 signalCustomerAlreadyExists 
