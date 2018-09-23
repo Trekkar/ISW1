@@ -21,12 +21,12 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'if 9/20/2018 20:46:02'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'imf 9/23/2018 14:10:40'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
 	| customerBook |
 	
-	customerBook := CustomerBook  new.
+	customerBook := CustomerBook new.
 	
 	self AssertThatABlock: [customerBook addCustomerNamed: 'John Lennon'] isExecutedInLessThanMilliseconds: 50 * millisecond.
 	
@@ -76,48 +76,36 @@ test04CanNotRemoveAnInvalidCustomer
 
 	! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 9/20/2018 09:21:59'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'imf 9/23/2018 12:58:37'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
-
-	| customerBook paulMcCartney|
-	
-	customerBook := CustomerBook  new.
-	paulMcCartney := 'Paul McCartney'.
-	
+	| customerBook paulMcCartney |
+	customerBook _ CustomerBook new.
+	paulMcCartney _ 'Paul McCartney'.
 	customerBook addCustomerNamed: paulMcCartney.
 	customerBook suspendCustomerNamed: paulMcCartney.
-	
-	self assert: 0 equals: customerBook numberOfActiveCustomers.
-	self assert: 1 equals: customerBook numberOfSuspendedCustomers.
-	self assert: 1 equals: customerBook numberOfCustomers.
-	self assert: (customerBook includesCustomerNamed: paulMcCartney).
-	
+	self
+		checkInCustomerBook: customerBook
+		NumberOfActiveUsers: 0
+		andNumberOfSuspendedCustomers: 1
+		andNumberOfCustomers: 1.
+	self assert: (customerBook includesCustomerNamed: paulMcCartney).! !
 
-	
-! !
-
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 9/20/2018 09:23:02'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'imf 9/23/2018 12:58:37'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
-
-	| customerBook paulMcCartney|
-	
-	customerBook := CustomerBook  new.
-	paulMcCartney := 'Paul McCartney'.
-	
+	| customerBook paulMcCartney |
+	customerBook _ CustomerBook new.
+	paulMcCartney _ 'Paul McCartney'.
 	customerBook addCustomerNamed: paulMcCartney.
 	customerBook suspendCustomerNamed: paulMcCartney.
 	customerBook removeCustomerNamed: paulMcCartney.
-	
-	self assert: 0 equals: customerBook numberOfActiveCustomers.
-	self assert: 0 equals: customerBook numberOfSuspendedCustomers.
-	self assert: 0 equals: customerBook numberOfCustomers.
-	self deny: (customerBook includesCustomerNamed: paulMcCartney).
+	self
+		checkInCustomerBook: customerBook
+		NumberOfActiveUsers: 0
+		andNumberOfSuspendedCustomers: 0
+		andNumberOfCustomers: 0.
+	self deny: (customerBook includesCustomerNamed: paulMcCartney).! !
 
-
-	
-! !
-
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 9/19/2018 17:55:41'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'imf 9/23/2018 13:55:24'!
 test07CanNotSuspendAnInvalidCustomer
 	
 	| customerBook johnLennon |
@@ -125,16 +113,10 @@ test07CanNotSuspendAnInvalidCustomer
 	customerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
-	
-	[ customerBook suspendCustomerNamed: 'Paul McCartney'.
-	self fail ]
-		on: CantSuspend 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+	self assertThatCustomerWithName: johnLennon IsInCustomerBook:  customerBook AfterSuspendingACustomerWithName: 'Paul McCartney'.
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 9/19/2018 17:57:11'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'imf 9/23/2018 13:55:31'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 	
 	| customerBook johnLennon |
@@ -143,17 +125,12 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
 	customerBook suspendCustomerNamed: johnLennon.
-	
-	[ customerBook suspendCustomerNamed: johnLennon.
-	self fail ]
-		on: CantSuspend 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+	self assertThatCustomerWithName: johnLennon IsInCustomerBook: customerBook  AfterSuspendingACustomerWithName: johnLennon .
+		
 ! !
 
 
-!CustomerBookTest methodsFor: 'TimingColaborations' stamp: 'if 9/20/2018 20:41:29'!
+!CustomerBookTest methodsFor: 'TimingMethods' stamp: 'if 9/20/2018 20:41:29'!
 AssertThatABlock: aBlock isExecutedInLessThanMilliseconds: anAmountOfMilliseconds
 	
 	| millisecondsAfterRunning millisecondsBeforeRunning |
@@ -166,11 +143,33 @@ AssertThatABlock: aBlock isExecutedInLessThanMilliseconds: anAmountOfMillisecond
 	! !
 
 
-!CustomerBookTest methodsFor: 'ErrorsColaborations' stamp: 'if 9/20/2018 21:28:56'!
+!CustomerBookTest methodsFor: 'On-Do Collaborations' stamp: 'if 9/20/2018 21:28:56'!
 aSetOfFailureCollaborations: aBlockofCollaborations OnFailure: aFailMessage CheckASetOfAssertions: aBlockOfAssertions	
 	[aBlockofCollaborations value. self fail] 
 		on: aFailMessage 
 		do: aBlockOfAssertions ! !
+
+!CustomerBookTest methodsFor: 'On-Do Collaborations' stamp: 'imf 9/23/2018 12:55:24'!
+assertThatCustomerWithName: aCustomerNameInBook IsInCustomerBook: aCustomerBook AfterSuspendingACustomerWithName: aCustomerNameNotInBook
+	[ aCustomerBook suspendCustomerNamed: aCustomerNameNotInBook. ]
+		on: CantSuspend 
+		do: [ :anError | 
+			self assert: aCustomerBook numberOfCustomers = 1.
+			self assert: (aCustomerBook includesCustomerNamed: aCustomerNameInBook) ]! !
+
+
+!CustomerBookTest methodsFor: 'ConsultInternalCollaborators' stamp: 'imf 9/23/2018 13:02:17'!
+checkInCustomerBook: aCustomerBook NumberOfActiveUsers: aNumberOfActiveUsers andNumberOfSuspendedCustomers: aNumberOfSuspendedUsers andNumberOfCustomers: aNumberOfCustomers
+	self
+		assert: aNumberOfActiveUsers
+		equals: aCustomerBook numberOfActiveCustomers.
+	self
+		assert: aNumberOfSuspendedUsers
+		equals: aCustomerBook numberOfSuspendedCustomers.
+	self
+		assert: aNumberOfCustomers
+		equals: aCustomerBook numberOfCustomers.! !
+
 
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
@@ -207,6 +206,16 @@ addCustomerNamed: aName
 	
 	customers add: aName ! !
 
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 11:20:40'!
+giveAllRegisteredCustomers 
+	"Mensaje creado para devolver todos los clientes registrados. Eventualmente si se agrega una nueva categoria de clientes habria que agregarlos aqui"
+
+	|allCustomers |
+	allCustomers := OrderedCollection new . 
+	allCustomers add: customers . 
+	allCustomers add: suspended .
+	^allCustomers .! !
+
 !CustomerBook methodsFor: 'customer management' stamp: 'NR 9/19/2018 17:36:57'!
 numberOfActiveCustomers
 	
@@ -222,32 +231,30 @@ numberOfSuspendedCustomers
 	
 	^suspended size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'if 9/20/2018 21:50:33'!
-removeCustomerNamed: aName 
- 
-	self removeFrom: customers theCostumerNamed: aName.
-	self removeFrom: suspended theCostumerNamed: aName.
-	
-	^ NotFound signal.
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:01:17'!
+removeACustomerFromAllCustomerCategories: aCollectionOfCustomerCategories WithTheName: aName
+	aCollectionOfCustomerCategories do: [ :aCustomerCategory | | name |
+		name _ self
+			removeCustomerIfExistsIn: aCustomerCategory
+			withName: aName.
+		name ifNotNil: [ ^ name ]].
+	^ NotFound signal.! !
 
-	
-! !
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:01:17'!
+removeCustomerIfExistsIn: aCustomerCategory withName: aName
+	| customer |
+	customer _ aCustomerCategory
+		detect: [ :aCustomer |
+			aCustomer = aName ]
+		ifNone: [ ].
+	customer ifNotNil: [ aCustomerCategory remove: customer ].
+	^ customer.! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'if 9/20/2018 21:52:50'!
-removeFrom: aSetOfCostumer theCostumerNamed: aName
-	
-	
-	^ aSetOfCostumer detect:[ :aCustomerName | (aName = aCustomerName)].
-	"
-	1 to: aSetOfCostumer size do: 
-	[ :index |
-		aName = (aSetOfCostumer at: index)
-			ifTrue: [
-				aSetOfCostumer removeAt: index.
-				^ aName 
-			] 
-	]"
-	! !
+!CustomerBook methodsFor: 'customer management' stamp: 'imf 9/23/2018 12:00:54'!
+removeCustomerNamed: aName
+	^ self
+		removeACustomerFromAllCustomerCategories: self giveAllRegisteredCustomers
+		WithTheName: aName.! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:52'!
 signalCustomerAlreadyExists 
