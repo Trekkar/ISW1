@@ -40,7 +40,7 @@ test07EnteroDividesEnteroCorrectly
 
 	self assert: two / two equals: one! !
 
-!NumeroTest methodsFor: 'tests' stamp: 'HernanWilkinson 5/7/2016 20:38'!
+!NumeroTest methodsFor: 'tests' stamp: 'if 9/27/2018 21:51:31'!
 test08FraccionAddsWithFraccionCorrectly
 "
     La suma de fracciones es:
@@ -372,22 +372,23 @@ Numero subclass: #Entero
 	^ (self * aMultiplier numerator) / aMultiplier denominator 
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'EG 9/25/2018 20:48:33'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:24:32'!
 + anAdder 
-	
-	anAdder class = self class ifTrue: [
-	^self class with: value + anAdder integerValue].
-	
-	^(Fraccion with:((self * anAdder denominator ) + anAdder numerator) over: anAdder denominator)! !
+		
+	^anAdder addAnInteger: self. 
+	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'EG 9/25/2018 22:16:20'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 16:55:50'!
 - aSubtrahend 
-	|newNumeratorAndDenominator|
+	|newNumerator|
 	aSubtrahend  class = self class ifTrue:[
 		^ self class with: value - aSubtrahend integerValue.
 	].
-	newNumeratorAndDenominator := (self * (aSubtrahend  denominator) ) .
-	^  newNumeratorAndDenominator  /  aSubtrahend denominator! !
+
+	newNumerator := (self * (aSubtrahend  denominator) ) .
+	newNumerator  _ newNumerator  - aSubtrahend numerator.
+	
+	^  newNumerator /  (aSubtrahend denominator)! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'EG 9/25/2018 21:19:47'!
 / aDivisor 
@@ -404,6 +405,18 @@ Numero subclass: #Entero
 // aDivisor 
 	
 	^self class with: value // aDivisor integerValue! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:52:46'!
+addAFraccion: aFraccion
+	
+	"|newNumerator|
+	newNumerator := aFraccion numerator + (self *  aFraccion denominator).
+	^newNumerator / (aFraccion denominator). "
+	^self + aFraccion .! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:11:41'!
+addAnInteger: anInteger
+	^self class with: value + anInteger integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -506,9 +519,11 @@ Numero subclass: #Fraccion
 	
 	^ numerator*aMultiplier / denominator.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/25/2018 21:00:26'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:52:04'!
 + anAdder 
+	^anAdder addAFraccion: self.
 	
+	"
 	| newNumerator newDenominator |
 	
 	anAdder class = self class ifTrue:[ 
@@ -519,16 +534,23 @@ Numero subclass: #Fraccion
 		].
 	 
 	newNumerator := numerator + (anAdder * denominator).
-	^newNumerator / denominator! !
+	^newNumerator / denominator"! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 17:18:56'!
 - aSubtrahend 
 	
 	| newNumerator newDenominator |
 	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
+	aSubtrahend class = self class ifTrue:[
+		
+		newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
+		newDenominator := denominator * aSubtrahend denominator.
+		^newNumerator / newDenominator	
+	].
 	
+	newNumerator  := aSubtrahend  *  denominator.
+	newNumerator  _  numerator - newNumerator.
+	newDenominator  :=  denominator.
 	^newNumerator / newDenominator 
 ! !
 
@@ -540,6 +562,21 @@ Numero subclass: #Fraccion
 	
 	^ self * ((Entero with:1) / aDivisor )
 ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:47:29'!
+addAFraccion: unaFraccion
+	|newNumerator newDenominator|
+	
+	newNumerator := (numerator * unaFraccion denominator) + (denominator * unaFraccion numerator).
+	newDenominator := denominator * unaFraccion denominator.
+	
+		
+	^newNumerator / newDenominator
+		! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:15:25'!
+addAnInteger: anInteger
+	^(Fraccion with:((anInteger *  denominator ) + numerator) over: denominator)! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -598,6 +635,7 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
