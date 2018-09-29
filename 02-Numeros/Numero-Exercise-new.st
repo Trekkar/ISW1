@@ -449,90 +449,6 @@ integerValue
 / aDivisor
 	^aDivisor  divideCero: self.! !
 
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:06:15'!
-// aDivisor 
-	^self! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:25:45'!
-addCero: aCeroAdder 
-	^self! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:08:33'!
-addEnterosPositivosMenosCeroYUno: anAdder 
-	^anAdder! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:08:46'!
-addFraccion: anAdder 
-	^anAdder! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:08:55'!
-addUno: anAdder 
-	^anAdder! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:44:07'!
-asDenominatorOf: aNumerator 
-	self signalZeroDivisionError ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:13:27'!
-divideCero: aCero 
-	self signalZeroDivisionError ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:14:26'!
-divideEnterosNegativos: aNegativeDividend 
-	self signalZeroDivisionError ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:14:07'!
-divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
-	self signalZeroDivisionError ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:14:45'!
-divideFraccion: aFraccionDividend 
-	self signalZeroDivisionError ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:14:57'!
-divideUno: aUnoDividend 
-	self signalZeroDivisionError ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:00:49'!
-fibonacci
-	^Entero with:1! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:06:41'!
-greatestCommonDivisorWith: aEntero 
-	^aEntero! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:16:15'!
-multiplyEnterosNegativos:  aNegativeMultiplier
-	^self ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:15:42'!
-multiplyEnterosPositivosMenosCeroYUno:  aPositiveMultiplier
-	^self ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:16:01'!
-multiplyFraccion:  aFraccionMultiplier
-	^self ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:33:00'!
-substractCero: aSubtrahend 
-	^self! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:34:44'!
-substractEnterosNegativos: aSubtrahend 
-	^aSubtrahend ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:35:20'!
-substractEnterosPositivosMenosCeroYUno: aSubtrahend 
-	^aSubtrahend ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:34:58'!
-substractFraccion: aSubtrahend 
-	^aSubtrahend ! !
-
-!Cero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:35:09'!
-substractUno: aSubtrahend 
-	^aSubtrahend ! !
-
 
 !Cero methodsFor: 'testing' stamp: 'if 9/28/2018 18:07:39'!
 isOne 
@@ -546,6 +462,87 @@ isZero
 !Cero methodsFor: 'error handling' stamp: 'if 9/28/2018 18:12:10'!
 signalZeroDivisionError 
 	self error: self class canNotDivideByZeroErrorDescription! !
+
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/29/2018 12:42:35'!
+addCero: anAdder 
+	^self! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:08:33'!
+addEnterosPositivosMenosCeroYUno: anAdder 
+	^anAdder! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:08:46'!
+addFraccion: anAdder 
+	^anAdder! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:08:55'!
+addUno: anAdder 
+	^anAdder! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:44:07'!
+asDenominatorOf: aNumerator 
+	self signalZeroDivisionError ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/29/2018 12:43:00'!
+divideCero: aDividend 
+	self signalZeroDivisionError ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/29/2018 12:43:07'!
+divideEnterosNegativos: aDividend 
+	self signalZeroDivisionError ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/29/2018 12:43:17'!
+divideEnterosPositivosMenosCeroYUno: aDividend 
+	self signalZeroDivisionError ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/29/2018 12:43:24'!
+divideFraccion: aDividend 
+	self signalZeroDivisionError ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/29/2018 12:43:37'!
+divideUno: aDividend 
+	self signalZeroDivisionError ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:00:49'!
+fibonacci
+	^Entero with:1! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:06:41'!
+greatestCommonDivisorWith: aEntero 
+	^aEntero! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:16:15'!
+multiplyEnterosNegativos:  aNegativeMultiplier
+	^self ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:15:42'!
+multiplyEnterosPositivosMenosCeroYUno:  aPositiveMultiplier
+	^self ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:16:01'!
+multiplyFraccion:  aFraccionMultiplier
+	^self ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:33:00'!
+substractCero: aSubtrahend 
+	^self! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:34:44'!
+substractEnterosNegativos: aSubtrahend 
+	^aSubtrahend ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:35:20'!
+substractEnterosPositivosMenosCeroYUno: aSubtrahend 
+	^aSubtrahend ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:34:58'!
+substractFraccion: aSubtrahend 
+	^aSubtrahend ! !
+
+!Cero methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:35:09'!
+substractUno: aSubtrahend 
+	^aSubtrahend ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -607,62 +604,6 @@ isZero
 / aDivisor
 	^ aDivisor divideEnterosNegativos: self.! !
 
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:49:01'!
-addEnterosNegativos: aNegativeAdder
-	^self class withValue: (aNegativeAdder integerValue + self integerValue )! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:22:55'!
-addEnterosPositivosMenosCeroYUno: aPositiveAdder 
-	^aPositiveAdder - self! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:24:43'!
-addUno: aUnoAdder  ! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:46:48'!
-asDenominatorOf: aNumerator
-	
-	^Fraccion with: aNumerator over: self! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:45:33'!
-divideEnterosNegativos: aNegativeDividend 
-	| denominator greatestCommonDivisor numerator| 
-	greatestCommonDivisor := aNegativeDividend greatestCommonDivisorWith: self. 
-	numerator := aNegativeDividend // greatestCommonDivisor . 
-	denominator := self // greatestCommonDivisor.
-	
-	
-	^denominator asDenominatorOf: numerator ! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:24:16'!
-divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
-	| denominator greatestCommonDivisor numerator| 
-	greatestCommonDivisor := aPositiveDividend greatestCommonDivisorWith: self. 
-	numerator := aPositiveDividend // greatestCommonDivisor . 
-	denominator := self // greatestCommonDivisor.
-	
-	^denominator asDenominatorOf: numerator.! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:26:11'!
-divideUno: aUnoDividend 
-	^Fraccion with: aUnoDividend over:self	! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:33:49'!
-fibonacci 
-	^self error: Entero negativeFibonacciErrorDescription 
-		! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:49:45'!
-greatestCommonDivisorWith: anEntero 
-	^Entero with:(value gcd: anEntero integerValue) ! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:22:53'!
-multiplyEnterosNegativos: aNegativeMultiplier 
-	^Entero with: aNegativeMultiplier integerValue * self integerValue ! !
-
-!EnterosNegativos methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:34:30'!
-multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier 
-	^Entero with: aPositiveMultiplier integerValue * self integerValue ! !
-
 
 !EnterosNegativos methodsFor: 'comparing' stamp: 'if 9/28/2018 23:01:37'!
 = anObject
@@ -672,6 +613,63 @@ multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier
 !EnterosNegativos methodsFor: 'comparing' stamp: 'if 9/28/2018 23:02:02'!
 hash  
 	^value hash! !
+
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:49:01'!
+addEnterosNegativos: aNegativeAdder
+	^self class withValue: (aNegativeAdder integerValue + self integerValue )! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 19:22:55'!
+addEnterosPositivosMenosCeroYUno: aPositiveAdder 
+	^aPositiveAdder - self! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 19:24:43'!
+addUno: aUnoAdder  ! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:46:48'!
+asDenominatorOf: aNumerator
+	
+	^Fraccion with: aNumerator over: self! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:45:33'!
+divideEnterosNegativos: aNegativeDividend 
+	| denominator greatestCommonDivisor numerator| 
+	greatestCommonDivisor := aNegativeDividend greatestCommonDivisorWith: self. 
+	numerator := aNegativeDividend // greatestCommonDivisor . 
+	denominator := self // greatestCommonDivisor.
+	
+	
+	^denominator asDenominatorOf: numerator ! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:24:16'!
+divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
+	| denominator greatestCommonDivisor numerator| 
+	greatestCommonDivisor := aPositiveDividend greatestCommonDivisorWith: self. 
+	numerator := aPositiveDividend // greatestCommonDivisor . 
+	denominator := self // greatestCommonDivisor.
+	
+	^denominator asDenominatorOf: numerator.! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:26:11'!
+divideUno: aUnoDividend 
+	^Fraccion with: aUnoDividend over:self	! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 19:33:49'!
+fibonacci 
+	^self error: Entero negativeFibonacciErrorDescription 
+		! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:49:45'!
+greatestCommonDivisorWith: anEntero 
+	^Entero with:(value gcd: anEntero integerValue) ! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:22:53'!
+multiplyEnterosNegativos: aNegativeMultiplier 
+	^Entero with: aNegativeMultiplier integerValue * self integerValue ! !
+
+!EnterosNegativos methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:34:30'!
+multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier 
+	^Entero with: aPositiveMultiplier integerValue * self integerValue ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -730,88 +728,6 @@ isZero
 / aDivisor
 	^aDivisor divideEnterosPositivosMenosCeroYUno: self! !
 
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:50:13'!
-addCero: aCeroAdder 
-	^self ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:53:14'!
-addEnterosPositivosMenosCeroYUno: anPositiveAdder 
-	^Entero with: value + anPositiveAdder integerValue ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:48:50'!
-addFraccion: aFraccionAdder 
-	^self + aFraccionAdder ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:53:24'!
-addUno: aUnoAdder 
-	^Entero with: 1 + value ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:43:30'!
-asDenominatorOf: aNumerator 
-	^Fraccion with: aNumerator over: self! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:50:34'!
-divideCero: aCeroDividend 
-	^aCeroDividend ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:59:57'!
-divideEnterosNegativos: aNegativeDividend 
-	^Fraccion with:  aNegativeDividend  over: self	! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:42:54'!
-divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
-	| denominator greatestCommonDivisor numerator| 
-	greatestCommonDivisor := aPositiveDividend greatestCommonDivisorWith: self. 
-	numerator := aPositiveDividend // greatestCommonDivisor . 
-	denominator := self // greatestCommonDivisor.
-	
-	^denominator asDenominatorOf: numerator.! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:57:36'!
-divideFraccion: aFraccionDividend 
-	^ aFraccionDividend numerator / (aFraccionDividend denominator *self)	! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:58:15'!
-divideUno: aUnoDividend 
-	^Fraccion with: aUnoDividend over:self	! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:53:40'!
-fibonacci  
-	| one two |
-	one := Entero with: 1.
-	two := Entero with: 2.
-	
-	^ (self - one) fibonacci + (self - two) fibonacci.
-	! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:48:41'!
-greatestCommonDivisorWith: aEntero 
-	^self class withValue:(value gcd: aEntero integerValue)! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:32:12'!
-multiplyEnterosNegativos: aNegativeMultiplier 
-	^Entero with: aNegativeMultiplier integerValue * self integerValue ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:48:41'!
-multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier 
-	^self class withValue: value * aPositiveMultiplier integerValue ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:01:52'!
-multiplyFraccion: aFraccionMultiplier 
-	^self * aFraccionMultiplier ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:10:08'!
-substractEnterosNegativos: aNegativeSubtrahend 
-	^aNegativeSubtrahend  - self! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:17:20'!
-substractEnterosPositivosMenosCeroYUno: aPositiveSubtrahend 
-	^Entero with:aPositiveSubtrahend integerValue - self integerValue ! !
-
-!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:09:32'!
-substractFraccion: aFraccionSubtrahend 
-	^aFraccionSubtrahend - self! !
-
 
 !EnterosPositivosMenosCeroYUno methodsFor: 'comparing' stamp: 'if 9/28/2018 20:09:16'!
 = anObject
@@ -821,6 +737,89 @@ substractFraccion: aFraccionSubtrahend
 !EnterosPositivosMenosCeroYUno methodsFor: 'comparing' stamp: 'if 9/28/2018 20:10:42'!
 hash  
 	^value hash! !
+
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:50:13'!
+addCero: aCeroAdder 
+	^self ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:53:14'!
+addEnterosPositivosMenosCeroYUno: anPositiveAdder 
+	^Entero with: value + anPositiveAdder integerValue ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:48:50'!
+addFraccion: aFraccionAdder 
+	^self + aFraccionAdder ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:53:24'!
+addUno: aUnoAdder 
+	^Entero with: 1 + value ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:43:30'!
+asDenominatorOf: aNumerator 
+	^Fraccion with: aNumerator over: self! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:50:34'!
+divideCero: aCeroDividend 
+	^aCeroDividend ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:59:57'!
+divideEnterosNegativos: aNegativeDividend 
+	^Fraccion with:  aNegativeDividend  over: self	! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:42:54'!
+divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
+	| denominator greatestCommonDivisor numerator| 
+	greatestCommonDivisor := aPositiveDividend greatestCommonDivisorWith: self. 
+	numerator := aPositiveDividend // greatestCommonDivisor . 
+	denominator := self // greatestCommonDivisor.
+	
+	^denominator asDenominatorOf: numerator.! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:57:36'!
+divideFraccion: aFraccionDividend 
+	^ aFraccionDividend numerator / (aFraccionDividend denominator *self)	! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:58:15'!
+divideUno: aUnoDividend 
+	^Fraccion with: aUnoDividend over:self	! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:53:40'!
+fibonacci  
+	| one two |
+	one := Entero with: 1.
+	two := Entero with: 2.
+	
+	^ (self - one) fibonacci + (self - two) fibonacci.
+	! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:48:41'!
+greatestCommonDivisorWith: aEntero 
+	^self class withValue:(value gcd: aEntero integerValue)! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:32:12'!
+multiplyEnterosNegativos: aNegativeMultiplier 
+	^Entero with: aNegativeMultiplier integerValue * self integerValue ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:48:41'!
+multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier 
+	^self class withValue: value * aPositiveMultiplier integerValue ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 19:01:52'!
+multiplyFraccion: aFraccionMultiplier 
+	^self * aFraccionMultiplier ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 19:10:08'!
+substractEnterosNegativos: aNegativeSubtrahend 
+	^aNegativeSubtrahend  - self! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:17:20'!
+substractEnterosPositivosMenosCeroYUno: aPositiveSubtrahend 
+	^Entero with:aPositiveSubtrahend integerValue - self integerValue ! !
+
+!EnterosPositivosMenosCeroYUno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 19:09:32'!
+substractFraccion: aFraccionSubtrahend 
+	^aFraccionSubtrahend - self! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -861,75 +860,6 @@ integerValue
 / aDivisor 
 	^aDivisor divideUno: self! !
 
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:23:25'!
-addEnterosPositivosMenosCeroYUno: aPositiveAdder 
-	^Entero with: 1 + aPositiveAdder integerValue ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:24:18'!
-addFraccion: aFraccionAdder 
-	^aFraccionAdder  denominator  + aFraccionAdder numerator  / aFraccionAdder  denominator ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:25:25'!
-addUno: aUnoAdder 
-	^EnterosPositivosMenosCeroYUno with:2! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:44:40'!
-asDenominatorOf: aNumerator 
-  ^aNumerator ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:27:23'!
-divideCero: aDividend  
-	^aDividend ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:28:09'!
-divideEnterosNegativos: aDividend  
-	^aDividend ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:28:02'!
-divideEnterosPositivosMenosCeroYUno: aDividend  
-	^aDividend ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:27:47'!
-divideUno: aDividend  
-	^self! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:28:11'!
-fibonacci 
-	^self
-	 ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:22:02'!
-greatestCommonDivisorWith: aEntero 
-	^self! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:28:54'!
-multiplyEnterosNegativos: aMultiplier 
-	^aMultiplier ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:28:45'!
-multiplyEnterosPositivosMenosCeroYUno: aMultiplier 
-	^aMultiplier ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:37:07'!
-substractCero: aSubtrahend 
-	^EnterosNegativos with: -1! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 18:41:02'!
-substractEnterosNegativos: aSubtrahend 
-	^aSubtrahend - 1! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:04:45'!
-substractEnterosPositivosMenosCeroYUno: aSubtrahend 
-	^Entero with: aSubtrahend integerValue -1! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:27:24'!
-substractFraccion: aSubtrahend 
-	^(aSubtrahend numerator - aSubtrahend denominator ) / aSubtrahend denominator ! !
-
-!Uno methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:19:23'!
-substractUno: aSubtrahend 
-	^Entero with: 0! !
-
 
 !Uno methodsFor: 'testing' stamp: 'if 9/28/2018 18:22:25'!
 isOne 
@@ -938,6 +868,76 @@ isOne
 !Uno methodsFor: 'testing' stamp: 'if 9/28/2018 18:22:35'!
 isZero
  	^false! !
+
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:23:25'!
+addEnterosPositivosMenosCeroYUno: aPositiveAdder 
+	^Entero with: 1 + aPositiveAdder integerValue ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:24:18'!
+addFraccion: aFraccionAdder 
+	^aFraccionAdder  denominator  + aFraccionAdder numerator  / aFraccionAdder  denominator ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:25:25'!
+addUno: aUnoAdder 
+	^EnterosPositivosMenosCeroYUno with:2! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:44:40'!
+asDenominatorOf: aNumerator 
+  ^aNumerator ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:27:23'!
+divideCero: aDividend  
+	^aDividend ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:28:09'!
+divideEnterosNegativos: aDividend  
+	^aDividend ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:28:02'!
+divideEnterosPositivosMenosCeroYUno: aDividend  
+	^aDividend ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:27:47'!
+divideUno: aDividend  
+	^self! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:28:11'!
+fibonacci 
+	^self
+	 ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:22:02'!
+greatestCommonDivisorWith: aEntero 
+	^self! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:28:54'!
+multiplyEnterosNegativos: aMultiplier 
+	^aMultiplier ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:28:45'!
+multiplyEnterosPositivosMenosCeroYUno: aMultiplier 
+	^aMultiplier ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:37:07'!
+substractCero: aSubtrahend 
+	^EnterosNegativos with: -1! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 18:41:02'!
+substractEnterosNegativos: aSubtrahend 
+	^aSubtrahend - 1! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:04:45'!
+substractEnterosPositivosMenosCeroYUno: aSubtrahend 
+	^Entero with: aSubtrahend integerValue -1! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:27:24'!
+substractFraccion: aSubtrahend 
+	^(aSubtrahend numerator - aSubtrahend denominator ) / aSubtrahend denominator ! !
+
+!Uno methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:19:23'!
+substractUno: aSubtrahend 
+	^Entero with: 0! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1017,69 +1017,6 @@ Numero subclass: #Fraccion
 	^ self * ((Entero with:1) / aDivisor )
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/27/2018 21:15:25'!
-addAnInteger: anInteger
-	^(Fraccion with:((anInteger *  denominator ) + numerator) over: denominator)! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:55:31'!
-addEnterosPositivosMenosCeroYUno: anPositiveAdder 
-	^anPositiveAdder *denominator +numerator  / denominator ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:02:17'!
-addFraccion: unaFraccion
-	|newNumerator newDenominator|
-	
-	newNumerator := (numerator * unaFraccion denominator) + (denominator * unaFraccion numerator).
-	newDenominator := denominator * unaFraccion denominator.
-	
-		
-	^newNumerator / newDenominator
-		! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:56:04'!
-addUno: anUnoAdder 
-	^denominator + numerator / denominator ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:57:40'!
-divideCero: aCeroDividend 
-	^aCeroDividend ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:58:25'!
-divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
-	^aPositiveDividend * denominator  /numerator ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:59:12'!
-divideFraccion: aFraccionDividend 
-	^(aFraccionDividend numerator * denominator )/(aFraccionDividend denominator * numerator )! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:59:29'!
-divideUno: aUnoDividend 
-	^denominator / numerator ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 20:59:59'!
-multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier 
-	^numerator  * aPositiveMultiplier / denominator ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:01:00'!
-multiplyFraccion: aFraccionMultiplier 
-	^(numerator  * aFraccionMultiplier numerator ) / (denominator * aFraccionMultiplier denominator)! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:14:29'!
-substractEnterosPositivosMenosCeroYUno: aPositiveSubtrahend 
-	^(aPositiveSubtrahend * denominator  / denominator ) - self! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:10:11'!
-substractFraccion: aFraccionSubtrahend 
-	| newNumerator newDenominator|
-
-	newNumerator := (aFraccionSubtrahend numerator * denominator) - (aFraccionSubtrahend denominator * numerator).
-		newDenominator := aFraccionSubtrahend denominator * denominator.
-		^newNumerator / newDenominator	! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 22:56:35'!
-substractUno: aUnoSubtrahend 
-	^(Entero with:denominator integerValue - numerator integerValue) / (Entero with:denominator integerValue ) ! !
-
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
 = anObject
@@ -1137,6 +1074,70 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/27/2018 21:15:25'!
+addAnInteger: anInteger
+	^(Fraccion with:((anInteger *  denominator ) + numerator) over: denominator)! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:55:31'!
+addEnterosPositivosMenosCeroYUno: anPositiveAdder 
+	^anPositiveAdder *denominator +numerator  / denominator ! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:02:17'!
+addFraccion: unaFraccion
+	|newNumerator newDenominator|
+	
+	newNumerator := (numerator * unaFraccion denominator) + (denominator * unaFraccion numerator).
+	newDenominator := denominator * unaFraccion denominator.
+	
+		
+	^newNumerator / newDenominator
+		! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:56:04'!
+addUno: anUnoAdder 
+	^denominator + numerator / denominator ! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:57:40'!
+divideCero: aCeroDividend 
+	^aCeroDividend ! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:58:25'!
+divideEnterosPositivosMenosCeroYUno: aPositiveDividend 
+	^aPositiveDividend * denominator  /numerator ! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:59:12'!
+divideFraccion: aFraccionDividend 
+	^(aFraccionDividend numerator * denominator )/(aFraccionDividend denominator * numerator )! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:59:29'!
+divideUno: aUnoDividend 
+	^denominator / numerator ! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 20:59:59'!
+multiplyEnterosPositivosMenosCeroYUno: aPositiveMultiplier 
+	^numerator  * aPositiveMultiplier / denominator ! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:01:00'!
+multiplyFraccion: aFraccionMultiplier 
+	^(numerator  * aFraccionMultiplier numerator ) / (denominator * aFraccionMultiplier denominator)! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:14:29'!
+substractEnterosPositivosMenosCeroYUno: aPositiveSubtrahend 
+	^(aPositiveSubtrahend * denominator  / denominator ) - self! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 21:10:11'!
+substractFraccion: aFraccionSubtrahend 
+	| newNumerator newDenominator|
+
+	newNumerator := (aFraccionSubtrahend numerator * denominator) - (aFraccionSubtrahend denominator * numerator).
+		newDenominator := aFraccionSubtrahend denominator * denominator.
+		^newNumerator / newDenominator	! !
+
+!Fraccion methodsFor: 'arithmetic operations private' stamp: 'if 9/28/2018 22:56:35'!
+substractUno: aUnoSubtrahend 
+	^(Entero with:denominator integerValue - numerator integerValue) / (Entero with:denominator integerValue ) ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
