@@ -372,21 +372,11 @@ Numero subclass: #Entero
 asDenominatorOf: aNumerator 
 	self subclassResponsibility ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:32:26'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'EG 9/30/2018 12:06:09'!
 fibonacci
 
 	self subclassResponsibility 
-	"
-	| one two |
-	
-	one := Entero with: 1.
-	two := Entero with: 2.
-	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
-	
-	^ (self - one) fibonacci + (self - two) fibonacci"
-		! !
+! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 19:28:53'!
 greatestCommonDivisorWith: anEntero 
@@ -966,65 +956,28 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/29/2018 21:29:36'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/30/2018 12:11:16'!
 * aMultiplier 
 	
 	^aMultiplier  multiplyFraccion: self.
-	"
-	aMultiplier class = self class ifTrue:[
-			^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
-	].
-	
-	^ numerator*aMultiplier / denominator.
-	"! !
+	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:02:17'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/30/2018 12:11:30'!
 + anAdder 
 	^anAdder addFraccion: self.
 	
-	"
-	| newNumerator newDenominator |
-	
-	anAdder class = self class ifTrue:[ 
-		newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-		newDenominator := denominator * anAdder denominator.
-	
-		^newNumerator / newDenominator
-		].
-	 
-	newNumerator := numerator + (anAdder * denominator).
-	^newNumerator / denominator"! !
+! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'if 9/28/2018 21:07:28'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/30/2018 12:11:35'!
 - aSubtrahend 
 	
 	^aSubtrahend substractFraccion: self
-	
-	"| newNumerator newDenominator |
-	
-	aSubtrahend class = self class ifTrue:[
-		
-		newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-		newDenominator := denominator * aSubtrahend denominator.
-		^newNumerator / newDenominator	
-	].
-	
-	newNumerator  := aSubtrahend  *  denominator.
-	newNumerator  _  numerator - newNumerator.
-	newDenominator  :=  denominator.
-	^newNumerator / newDenominator "
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/29/2018 21:30:52'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'EG 9/30/2018 12:11:42'!
 / aDivisor 
 	^aDivisor  divideFraccion: self.
-
-	"aDivisor class = self class ifTrue:[
-			^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)
-		].
-	
-	^ self * ((Entero with:1) / aDivisor )
-	"! !
+! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
