@@ -227,17 +227,17 @@ initializeWith: aQueue
 QueueState class
 	instanceVariableNames: 'unaLlamada'!
 
-!QueueState class methodsFor: 'state searcher' stamp: 'EG 9/30/2018 19:53:40'!
+!QueueState class methodsFor: 'state searcher' stamp: 'EG 10/4/2018 00:05:20'!
 StateForQueue: aQueue
 
 	| QueueState |
 
-	QueueState _ self subclasses detect: [ :QueueStates | QueueStates correspondsTo: aQueue ].
+	QueueState _ self subclasses detect: [ :QueueStates | QueueStates canHandle: aQueue ].
 	
 	^ QueueState for: aQueue.! !
 
-!QueueState class methodsFor: 'state searcher' stamp: 'EG 9/30/2018 19:54:16'!
-correspondsTo: aQueue
+!QueueState class methodsFor: 'state searcher' stamp: 'EG 10/4/2018 00:05:19'!
+canHandle: aQueue
 	self subclassResponsibility .! !
 
 
@@ -273,8 +273,8 @@ next
 EmptyQueue class
 	instanceVariableNames: ''!
 
-!EmptyQueue class methodsFor: 'state searcher' stamp: 'EG 9/30/2018 19:54:16'!
-correspondsTo: aQueue
+!EmptyQueue class methodsFor: 'state searcher' stamp: 'EG 10/4/2018 00:05:20'!
+canHandle: aQueue
 	^aQueue isEmpty.! !
 
 
@@ -290,12 +290,11 @@ initializeWith: aQueue
 	queue:=aQueue ! !
 
 
-!NotEmptyQueue methodsFor: 'queue operation' stamp: 'EG 9/30/2018 19:19:29'!
+!NotEmptyQueue methodsFor: 'queue operations' stamp: 'EG 9/30/2018 19:19:29'!
 dequeue
 	^queue dequeueWhenNotEmpty.! !
 
-
-!NotEmptyQueue methodsFor: 'as yet unclassified' stamp: 'EG 9/30/2018 20:10:57'!
+!NotEmptyQueue methodsFor: 'queue operations' stamp: 'EG 9/30/2018 20:10:57'!
 next
 	^queue nextWhenNotEmpty! !
 
@@ -305,6 +304,6 @@ next
 NotEmptyQueue class
 	instanceVariableNames: ''!
 
-!NotEmptyQueue class methodsFor: 'state searcher' stamp: 'EG 9/30/2018 19:54:59'!
-correspondsTo: aQueue
+!NotEmptyQueue class methodsFor: 'state searcher' stamp: 'EG 10/4/2018 00:05:19'!
+canHandle: aQueue
 	^aQueue isNotEmpty.! !
