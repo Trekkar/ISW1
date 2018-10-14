@@ -111,6 +111,10 @@ doesManage: anAccount
 
 	self subclassResponsibility ! !
 
+!SummarizingAccount methodsFor: 'testing' stamp: 'EG 10/14/2018 17:43:00'!
+doesManageOrThereIsAnAccountFrom: anAccount
+	self subclassResponsibility .! !
+
 !SummarizingAccount methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:54'!
 hasRegistered: aTransaction
 
@@ -119,6 +123,11 @@ hasRegistered: aTransaction
 
 !SummarizingAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:35'!
 transactions
+
+	self subclassResponsibility ! !
+
+!SummarizingAccount methodsFor: 'transactions' stamp: 'EG 10/14/2018 16:03:58'!
+transactionsOf: anAccount
 
 	self subclassResponsibility ! !
 
@@ -142,11 +151,13 @@ balance
 ! !
 
 
-!Portfolio methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:28'!
-doesManage: anAccount
+!Portfolio methodsFor: 'testing' stamp: 'EG 10/14/2018 17:47:08'!
+doesManage: anAccount	
+	^self = anAccount  or: [accounts anySatisfy: [:aSummerizingAccount | aSummerizingAccount doesManage: anAccount]]! !
 
-	self shouldBeImplemented 
-! !
+!Portfolio methodsFor: 'testing' stamp: 'EG 10/14/2018 17:45:37'!
+doesManageOrThereIsAnAccountFrom: anAccount
+	^self = anAccount  or: [accounts anySatisfy: [:aSummerizingAccount | (aSummerizingAccount doesManageOrThereIsAnAccountFrom: anAccount) or: [anAccount doesManageOrThereIsAnAccountFrom: aSummerizingAccount ]]]! !
 
 !Portfolio methodsFor: 'testing' stamp: 'if 10/11/2018 21:28:44'!
 hasRegistered: aTransaction
@@ -154,15 +165,22 @@ hasRegistered: aTransaction
 	^accounts anySatisfy: [:anAccount | anAccount hasRegistered: aTransaction ]! !
 
 
-!Portfolio methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:39'!
+!Portfolio methodsFor: 'transactions' stamp: 'EG 10/14/2018 17:43:41'!
 transactions 
 
-	self shouldBeImplemented ! !
+	|transactions |
+	transactions := OrderedCollection  new. 
+	accounts do:[:anAccount | transactions addAll: anAccount transactions ].
+	^transactions 
+	
 
-!Portfolio methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:40'!
+! !
+
+!Portfolio methodsFor: 'transactions' stamp: 'EG 10/14/2018 16:11:20'!
 transactionsOf: anAccount 
-
-	self shouldBeImplemented ! !
+	
+	accounts detect: [:aSummarizingAccount | aSummarizingAccount  doesManage:anAccount ] ifNone:[^self error: self class accountNotManagedMessageDescription ].
+	^anAccount transactions .! !
 
 
 !Portfolio methodsFor: 'initialization' stamp: 'if 10/11/2018 21:25:47'!
@@ -182,10 +200,13 @@ initializeWith: leftAccount with:rightAccount
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'instance creation' stamp: 'if 10/11/2018 21:14:37'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'EG 10/14/2018 17:21:06'!
 with: leftAccount with: rightAccount
-
-	^self new initializeWith: leftAccount with:rightAccount .! !
+	
+	(self checkDifferentAccount:leftAccount andAccount:rightAccount) ifFalse:[^self new initializeWith: leftAccount with:rightAccount].
+	^self error: self accountAlreadyManagedErrorMessage.
+	
+	 ! !
 
 !Portfolio class methodsFor: 'instance creation' stamp: 'if 10/11/2018 21:22:55'!
 withAll: aCollectionOfAccounts
@@ -202,6 +223,11 @@ accountAlreadyManagedErrorMessage
 accountNotManagedMessageDescription
 	
 	^ 'Account not managed'! !
+
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'EG 10/14/2018 17:42:22'!
+checkDifferentAccount:leftAccount andAccount:rightAccount
+	^(leftAccount doesManageOrThereIsAnAccountFrom: rightAccount)  or: [ (rightAccount doesManageOrThereIsAnAccountFrom: leftAccount )  or:  [ leftAccount = rightAccount .]]! !
 
 
 !classDefinition: #ReceptiveAccount category: #'Portfolio-Ejercicio'!
@@ -230,7 +256,7 @@ transactions
 	^ transactions copy! !
 
 
-!ReceptiveAccount methodsFor: 'balance' stamp: 'if 10/11/2018 21:11:35'!
+!ReceptiveAccount methodsFor: 'balance' stamp: 'EG 10/14/2018 15:59:06'!
 balance
 	
 	^transactions inject: 0 into: [:balance :aTransaction | balance + aTransaction netValue]. 
@@ -243,6 +269,10 @@ doesManage: anAccount
 
 	^ self = anAccount 
 ! !
+
+!ReceptiveAccount methodsFor: 'testing' stamp: 'EG 10/14/2018 17:46:15'!
+doesManageOrThereIsAnAccountFrom: anAccount
+	^ self = anAccount ! !
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:54'!
 hasRegistered: aTtransaction
