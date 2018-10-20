@@ -528,35 +528,35 @@ test29ReversePortfolioTreePrinterPrintsTheCompositeStartingFromTheLeaves
 	! !
 
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HAW 5/10/2018 19:22:21'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 10/20/2018 17:51:16'!
 accountSummaryLinesOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	^(AccountSummary new) accountSummaryOf: aReceptiveAccount .! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 10/20/2018 18:22:50'!
 accountTransferNetOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	^(TransferNet new) transferNetOf: aReceptiveAccount .! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 10/20/2018 19:18:37'!
 investmentEarningsOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	^(InvestmentEarning new) investmentEarningsOf: aReceptiveAccount ! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 10/20/2018 19:04:53'!
 investmentNetOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	^(InvestmentNet new) investmentNetOf: aReceptiveAccount .! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
 portofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
 	
 	self shouldBeImplemented ! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HAW 10/18/2018 16:38:05'!
+!PortfolioTest methodsFor: 'test support' stamp: 'nacho 10/20/2018 18:52:27'!
 registerCertificateOfDepositOf: anAmount during: aNumberOfDays at: anInteresRate on: anAccount
 
-	self shouldBeImplemented ! !
+	^anAccount register: (CertificateOfDeposit withAmount:anAmount during:aNumberOfDays at:anInteresRate )! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'if 10/18/2018 19:20:26'!
 registerTransferOf: anAmount from: fromAccount to: toAccount
