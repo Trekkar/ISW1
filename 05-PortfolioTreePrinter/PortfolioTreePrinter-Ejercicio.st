@@ -1,43 +1,3 @@
-!classDefinition: #AccountSummary category: #'PortfolioTreePrinter-Ejercicio'!
-Object subclass: #AccountSummary
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'PortfolioTreePrinter-Ejercicio'!
-
-!AccountSummary methodsFor: 'transactions printing' stamp: 'nacho 10/20/2018 19:16:36'!
-printCertificateOfDepositWithValue: anAmount during: aNumberOfDays at: anInterestRate 
-	^'Plazo fijo por ' , anAmount printString , ' durante ',  aNumberOfDays printString, ' dias a una tna de ', (anInterestRate*100) printString,'%'. ! !
-
-!AccountSummary methodsFor: 'transactions printing' stamp: 'nacho 10/20/2018 18:10:09'!
-printDepositWithValue: aValue  
-	^'Deposito por ' , aValue printString .
-	! !
-
-!AccountSummary methodsFor: 'transactions printing' stamp: 'nacho 10/20/2018 18:10:19'!
-printTransferDepositWithValue: aValue  
-	^'Transferencia por ' , aValue printString.
-	! !
-
-!AccountSummary methodsFor: 'transactions printing' stamp: 'nacho 10/20/2018 18:10:23'!
-printTransferWithdrawWithValue: aValue  
-	^'Transferencia por -' , aValue printString.
-	! !
-
-!AccountSummary methodsFor: 'transactions printing' stamp: 'nacho 10/20/2018 18:10:28'!
-printWithdrawWithValue: aValue  
-	^'Extraccion por ' , aValue printString.
-	! !
-
-
-!AccountSummary methodsFor: 'printing' stamp: 'nacho 10/20/2018 18:01:23'!
-accountSummaryOf: anAccount 
-
-	^anAccount summaryOn: self.
-
-	! !
-
-
 !classDefinition: #AccountTransaction category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #AccountTransaction
 	instanceVariableNames: ''
@@ -56,25 +16,8 @@ value
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'account summary' stamp: 'nacho 10/20/2018 18:02:04'!
-printTransaction: anAccountSummary 
-	self subclassResponsibility .! !
 
 
-!AccountTransaction methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:32:49'!
-transferNet: aTransferNet 
-	self subclassResponsibility ! !
-
-
-!AccountTransaction methodsFor: 'investmentNet' stamp: 'nacho 10/20/2018 19:07:51'!
-investmentNet: anInvestmentNet 
-	self subclassResponsibility ! !
-
-
-!AccountTransaction methodsFor: 'investmentEarning' stamp: 'nacho 10/20/2018 19:23:59'!
-investmentEarning: anInvestmentEarning 
-	self subclassResponsibility 
-! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -107,14 +50,6 @@ initializeWithValue: anAmount WithDays: aNumberOfDays WithInterest: anInterestRa
 	interestrate := anInterestRate .! !
 
 
-!CertificateOfDeposit methodsFor: 'account summary' stamp: 'nacho 10/20/2018 19:00:25'!
-printTransaction: anAccountSummary 
-	^anAccountSummary printCertificateOfDepositWithValue: self value during: self during at: self interestRate .! !
-
-
-!CertificateOfDeposit methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 19:03:03'!
-transferNet: aTransferNet 
-	^aTransferNet aZeroTransferNet .! !
 
 
 !CertificateOfDeposit methodsFor: 'accesing' stamp: 'nacho 10/20/2018 18:57:38'!
@@ -135,14 +70,11 @@ affectBalance: currentBalance
 	^currentBalance - value! !
 
 
-!CertificateOfDeposit methodsFor: 'investmentNet' stamp: 'nacho 10/20/2018 19:09:29'!
-investmentNet: anInvestmentNet  
-	^anInvestmentNet investmentNetOfCertificateOfDepositWithValue: self value ! !
 
 
-!CertificateOfDeposit methodsFor: 'investmentEarning' stamp: 'nacho 10/20/2018 19:25:52'!
-investmentEarning: anInvestmentEarning  
-	^anInvestmentEarning investmentEarningOfCertificateOfDepositWithValue: self value during: self during at: self interestRate .! !
+!CertificateOfDeposit methodsFor: 'accept' stamp: 'if 10/22/2018 18:14:42'!
+accept: aVisitor 
+	^aVisitor visitCertificateOfDeposit: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -179,24 +111,13 @@ value
 	^ value! !
 
 
-!Deposit methodsFor: 'account summary' stamp: 'nacho 10/20/2018 18:03:17'!
-printTransaction: anAccountSummary 
-	^anAccountSummary printDepositWithValue: self value .! !
 
 
-!Deposit methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:35:17'!
-transferNet: aTransferNet  
-	^aTransferNet aZeroTransferNet.! !
 
 
-!Deposit methodsFor: 'investmentNet' stamp: 'nacho 10/20/2018 19:09:20'!
-investmentNet: anInvestmentNet   
-	^anInvestmentNet aZeroInvestmentNet! !
-
-
-!Deposit methodsFor: 'investmentEarning' stamp: 'nacho 10/20/2018 19:26:39'!
-investmentEarning: anInvestmentEarning  
-	^anInvestmentEarning aZeroInvestmentEarning! !
+!Deposit methodsFor: 'accept' stamp: 'if 10/22/2018 18:14:01'!
+accept: aVisitor 
+	^aVisitor visitDeposit: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -232,24 +153,13 @@ transfer
 	^transfer! !
 
 
-!TransferLeg methodsFor: 'account summary' stamp: 'nacho 10/20/2018 18:03:53'!
-printTransaction: anAccountSummary 
-	self subclassResponsibility .! !
 
 
-!TransferLeg methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:33:24'!
-transferNet: aTransferNet  
+
+
+!TransferLeg methodsFor: 'accept' stamp: 'if 10/22/2018 18:15:09'!
+accept: aVisitor 
 	self subclassResponsibility ! !
-
-
-!TransferLeg methodsFor: 'investmentNet' stamp: 'nacho 10/20/2018 19:09:53'!
-investmentNet: anInvestmentNet   
-	^anInvestmentNet aZeroInvestmentNet! !
-
-
-!TransferLeg methodsFor: 'investmentEarning' stamp: 'nacho 10/20/2018 19:27:11'!
-investmentEarning: anInvestmentEarning  
-	^anInvestmentEarning aZeroInvestmentEarning! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -283,14 +193,11 @@ initializeWith: aTransfer
 	transfer := aTransfer .! !
 
 
-!TransferDeposit methodsFor: 'account summary' stamp: 'nacho 10/20/2018 18:04:18'!
-printTransaction: anAccountSummary 
-	^anAccountSummary printTransferDepositWithValue: self value .! !
 
 
-!TransferDeposit methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:34:44'!
-transferNet: aTransferNet 
-	^aTransferNet transferOfTransferDepositWithValue: transfer value.! !
+!TransferDeposit methodsFor: 'accept' stamp: 'if 10/22/2018 18:15:30'!
+accept: aVisitor 
+	^aVisitor visitTransferDeposit: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -324,14 +231,11 @@ initializeWith: aTransfer
 	transfer := aTransfer .! !
 
 
-!TransferWithdraw methodsFor: 'account summary' stamp: 'nacho 10/20/2018 18:04:44'!
-printTransaction: anAccountSummary 
-	^anAccountSummary printTransferWithdrawWithValue: self value .! !
 
 
-!TransferWithdraw methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:36:40'!
-transferNet: aTransferNet 
-	^aTransferNet transferOfTransferWithdrawWithValue: transfer value.! !
+!TransferWithdraw methodsFor: 'accept' stamp: 'if 10/22/2018 18:15:53'!
+accept: aVisitor 
+	^aVisitor visitTransferWithdraw: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -368,24 +272,13 @@ value
 	^ value ! !
 
 
-!Withdraw methodsFor: 'account summary' stamp: 'nacho 10/20/2018 18:03:30'!
-printTransaction: anAccountSummary 
-	^anAccountSummary printWithdrawWithValue: self value.! !
 
 
-!Withdraw methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:36:09'!
-transferNet: aTransferNet  
-	^aTransferNet aZeroTransferNet.! !
 
 
-!Withdraw methodsFor: 'investmentNet' stamp: 'nacho 10/20/2018 19:10:07'!
-investmentNet: anInvestmentNet   
-	^anInvestmentNet aZeroInvestmentNet! !
-
-
-!Withdraw methodsFor: 'investmentEarning' stamp: 'nacho 10/20/2018 19:27:21'!
-investmentEarning: anInvestmentEarning  
-	^anInvestmentEarning aZeroInvestmentEarning! !
+!Withdraw methodsFor: 'accept' stamp: 'if 10/22/2018 18:16:18'!
+accept: aVisitor 
+	^aVisitor visitWithdraw: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -409,46 +302,300 @@ register: aValue on: account
 	^ withdraw! !
 
 
-!classDefinition: #InvestmentEarning category: #'PortfolioTreePrinter-Ejercicio'!
-Object subclass: #InvestmentEarning
+!classDefinition: #AccountTransactionVisitor category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #AccountTransactionVisitor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!InvestmentEarning methodsFor: 'earnings' stamp: 'nacho 10/20/2018 19:21:44'!
-investmentEarningsOf: aReceptiveAccount 
-	^aReceptiveAccount investmentEarningOfTransactionsOn: self.! !
+!AccountTransactionVisitor methodsFor: 'visit transactions' stamp: 'if 10/22/2018 18:41:12'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+	self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'visit transactions' stamp: 'if 10/22/2018 18:40:23'!
+visitDeposit: aDeposit 
+	self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'visit transactions' stamp: 'if 10/22/2018 18:40:49'!
+visitTransferDeposit: aTransferDeposit
+	self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'visit transactions' stamp: 'if 10/22/2018 18:41:00'!
+visitTransferWithdraw: aTransferWithdraw
+	self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'visit transactions' stamp: 'if 10/22/2018 18:40:35'!
+visitWithdraw: aWithdraw
+	self subclassResponsibility ! !
+
+
+!AccountTransactionVisitor methodsFor: 'value' stamp: 'if 10/22/2018 18:39:52'!
+value 	
+	self subclassResponsibility ! !
+
+
+!classDefinition: #AccountSummary category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #AccountSummary
+	instanceVariableNames: 'account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!AccountSummary methodsFor: 'transactions printing' stamp: 'if 10/22/2018 18:23:28'!
+visitCertificateOfDeposit: aCertificateOfDeposit 
+	^'Plazo fijo por ' , (aCertificateOfDeposit value) printString , ' durante ',  (aCertificateOfDeposit during) printString, ' dias a una tna de ', ((aCertificateOfDeposit interestRate)*100) printString,'%'. ! !
+
+!AccountSummary methodsFor: 'transactions printing' stamp: 'if 10/22/2018 18:21:24'!
+visitDeposit: aDeposit 
+	^'Deposito por ' , (aDeposit value) printString .! !
+
+!AccountSummary methodsFor: 'transactions printing' stamp: 'if 10/22/2018 18:23:54'!
+visitTransferDeposit: aTransferDeposit 
+	^'Transferencia por ' , (aTransferDeposit value) printString.! !
+
+!AccountSummary methodsFor: 'transactions printing' stamp: 'if 10/22/2018 18:24:21'!
+visitTransferWithdraw: aTransferWithdraw 
+	^'Transferencia por -' , (aTransferWithdraw value) printString.! !
+
+!AccountSummary methodsFor: 'transactions printing' stamp: 'if 10/22/2018 18:24:42'!
+visitWithdraw: aWithdraw 
+	^'Extraccion por ' , (aWithdraw value) printString.! !
+
+
+!AccountSummary methodsFor: 'printing' stamp: 'if 10/22/2018 17:58:14'!
+value
+
+	^account summaryOn: self.
+
+	! !
+
+
+!AccountSummary methodsFor: 'initialization' stamp: 'if 10/22/2018 17:56:58'!
+initializeWith: anAccount  
+	account := anAccount ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountSummary class' category: #'PortfolioTreePrinter-Ejercicio'!
+AccountSummary class
+	instanceVariableNames: ''!
+
+!AccountSummary class methodsFor: 'class initialization' stamp: 'if 10/22/2018 17:43:25'!
+of: anAccount 
+	^self new initializeWith: anAccount ! !
+
+
+!classDefinition: #InvestmentEarning category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #InvestmentEarning
+	instanceVariableNames: 'account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!InvestmentEarning methodsFor: 'earnings' stamp: 'if 10/22/2018 17:58:57'!
+value
+	^account investmentEarningOfTransactionsOn: self.! !
 
 
 !InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'nacho 10/20/2018 19:27:43'!
 aZeroInvestmentEarning 
 	^0.! !
 
-!InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'nacho 10/20/2018 19:29:17'!
-investmentEarningOfCertificateOfDepositWithValue: anAmount during: aNumberOfDays at: anInterestRate 
-	^(anAmount *(anInterestRate/360))* aNumberOfDays ! !
+!InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'if 10/22/2018 18:29:41'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+	^((aCertificateOfDeposit value)*((aCertificateOfDeposit interestRate)/360))* (aCertificateOfDeposit during) ! !
+
+!InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'if 10/22/2018 18:27:41'!
+visitDeposit: aDeposit 
+	^self aZeroInvestmentEarning .! !
+
+!InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'if 10/22/2018 18:28:13'!
+visitTransferDeposit: aTransferDeposit 
+	^self aZeroInvestmentEarning .! !
+
+!InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'if 10/22/2018 18:28:25'!
+visitTransferWithdraw: aTransferWithdraw 
+	^self aZeroInvestmentEarning .! !
+
+!InvestmentEarning methodsFor: 'transaction investmentEarnings' stamp: 'if 10/22/2018 18:27:59'!
+visitWithdraw: aWithdraw 
+	^self aZeroInvestmentEarning .! !
+
+
+!InvestmentEarning methodsFor: 'initialization' stamp: 'if 10/22/2018 17:57:17'!
+initializeWith: anAccount  
+	account := anAccount ! !
+
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InvestmentEarning class' category: #'PortfolioTreePrinter-Ejercicio'!
+InvestmentEarning class
+	instanceVariableNames: ''!
+
+!InvestmentEarning class methodsFor: 'class initialization' stamp: 'if 10/22/2018 17:43:55'!
+of: anAccount 
+	^self new initializeWith: anAccount .! !
 
 
 !classDefinition: #InvestmentNet category: #'PortfolioTreePrinter-Ejercicio'!
-Object subclass: #InvestmentNet
-	instanceVariableNames: ''
+AccountTransactionVisitor subclass: #InvestmentNet
+	instanceVariableNames: 'account'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!InvestmentNet methodsFor: 'investment' stamp: 'nacho 10/20/2018 19:05:55'!
-investmentNetOf: anAccount 
-	^anAccount investmentNetOfTransactionsOn: self! !
+!InvestmentNet methodsFor: 'investment' stamp: 'if 10/22/2018 17:59:13'!
+value
+	^account investmentNetOfTransactionsOn: self! !
 
 
 !InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'nacho 10/20/2018 19:10:39'!
 aZeroInvestmentNet 
  	^0.! !
 
-!InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'nacho 10/20/2018 19:11:43'!
-investmentNetOfCertificateOfDepositWithValue: anAmount 
-	^anAmount ! !
+!InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'if 10/22/2018 18:34:08'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+	^aCertificateOfDeposit value ! !
+
+!InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'if 10/22/2018 18:32:57'!
+visitDeposit: aDeposit 
+	^self aZeroInvestmentNet ! !
+
+!InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'if 10/22/2018 18:33:20'!
+visitTransferDeposit: aTransferDeposit
+	^self aZeroInvestmentNet ! !
+
+!InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'if 10/22/2018 18:33:34'!
+visitTransferWithdraw: aTransferWithdraw
+	^self aZeroInvestmentNet ! !
+
+!InvestmentNet methodsFor: 'transactions investmentNet' stamp: 'if 10/22/2018 18:33:09'!
+visitWithdraw: aWithdraw 
+	^self aZeroInvestmentNet ! !
+
+
+!InvestmentNet methodsFor: 'initialization' stamp: 'if 10/22/2018 17:57:32'!
+initializeWith: anAccount  
+	account := anAccount ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InvestmentNet class' category: #'PortfolioTreePrinter-Ejercicio'!
+InvestmentNet class
+	instanceVariableNames: ''!
+
+!InvestmentNet class methodsFor: 'class initialization' stamp: 'if 10/22/2018 17:44:07'!
+of: anAccount 
+	^self new initializeWith: anAccount ! !
+
+
+!classDefinition: #TransferNet category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #TransferNet
+	instanceVariableNames: 'account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferNet methodsFor: 'transferNet' stamp: 'if 10/22/2018 17:59:29'!
+value
+	^account transferNetTransactionsOn: self.! !
+
+
+!TransferNet methodsFor: 'transaction transferNet' stamp: 'nacho 10/20/2018 18:37:32'!
+aZeroTransferNet 
+	^0.! !
+
+!TransferNet methodsFor: 'transaction transferNet' stamp: 'if 10/22/2018 18:37:43'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+	^self aZeroTransferNet ! !
+
+!TransferNet methodsFor: 'transaction transferNet' stamp: 'if 10/22/2018 18:37:08'!
+visitDeposit: aDeposit 
+	^self aZeroTransferNet ! !
+
+!TransferNet methodsFor: 'transaction transferNet' stamp: 'if 10/22/2018 18:38:21'!
+visitTransferDeposit: aTransferDeposit
+	^aTransferDeposit value! !
+
+!TransferNet methodsFor: 'transaction transferNet' stamp: 'if 10/22/2018 18:38:38'!
+visitTransferWithdraw: aTransferWithdraw
+	^-1*(aTransferWithdraw value) ! !
+
+!TransferNet methodsFor: 'transaction transferNet' stamp: 'if 10/22/2018 18:37:23'!
+visitWithdraw: aWithdraw
+	^self aZeroTransferNet ! !
+
+
+!TransferNet methodsFor: 'initialization' stamp: 'if 10/22/2018 17:57:47'!
+initializeWith: anAccount  
+	account := anAccount ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferNet class' category: #'PortfolioTreePrinter-Ejercicio'!
+TransferNet class
+	instanceVariableNames: ''!
+
+!TransferNet class methodsFor: 'class initialization' stamp: 'if 10/22/2018 17:46:32'!
+of: anAccount 
+	^self new initializeWith: anAccount ! !
+
+
+!classDefinition: #PortfolioTreePrinter category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #PortfolioTreePrinter
+	instanceVariableNames: 'portfolio namingaccounts lines spaces'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!PortfolioTreePrinter methodsFor: 'initialization' stamp: 'if 10/22/2018 18:49:07'!
+initializefor: aPortfolio with:aDictionary  
+	portfolio := aPortfolio . 
+	namingaccounts := aDictionary .! !
+
+
+!PortfolioTreePrinter methodsFor: 'value' stamp: 'if 10/22/2018 19:41:19'!
+value
+	
+	lines := OrderedCollection new. 
+	spaces := ''.
+	portfolio accept: self. 
+	spaces := ''.
+	^lines.
+	! !
+
+
+!PortfolioTreePrinter methodsFor: 'account' stamp: 'if 10/22/2018 19:53:47'!
+visitPortfolio: aPortfolio 
+	lines add:  (spaces , (namingaccounts at: aPortfolio)).
+	spaces := spaces , ' '.
+	(aPortfolio accounts ) do: [:anAccount | anAccount accept: self]. 
+	self substractSpaces.
+	^lines.
+	! !
+
+!PortfolioTreePrinter methodsFor: 'account' stamp: 'if 10/22/2018 19:40:36'!
+visitReceptiveAccount: aReceptiveAccount
+	lines add: ( spaces , (namingaccounts at: aReceptiveAccount)).
+	^lines.
+	! !
+
+
+!PortfolioTreePrinter methodsFor: 'auxiliary' stamp: 'if 10/22/2018 19:53:30'!
+substractSpaces
+ 	^spaces:= (spaces copyFrom: 1 to: (spaces size -1) )! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PortfolioTreePrinter class' category: #'PortfolioTreePrinter-Ejercicio'!
+PortfolioTreePrinter class
+	instanceVariableNames: ''!
+
+!PortfolioTreePrinter class methodsFor: 'class initialization' stamp: 'if 10/22/2018 18:48:33'!
+for: aPortfolio with: aDictionary  
+	^self new initializefor: aPortfolio with:aDictionary ! !
 
 
 !classDefinition: #SummarizingAccount category: #'PortfolioTreePrinter-Ejercicio'!
@@ -480,29 +627,34 @@ transactions
 	self subclassResponsibility ! !
 
 
-!SummarizingAccount methodsFor: 'summary' stamp: 'nacho 10/20/2018 18:11:47'!
+!SummarizingAccount methodsFor: 'summary' stamp: 'if 10/22/2018 18:25:58'!
 summaryOn: anAccountSummary 
  	|summary| 
 	summary := OrderedCollection  new.
-	self transactions do: [:aTransaction|  summary add: (aTransaction printTransaction:anAccountSummary)].
+	self transactions do: [:aTransaction|  summary add: (aTransaction accept:anAccountSummary)].
 	^summary ! !
 
 
-!SummarizingAccount methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:41:44'!
+!SummarizingAccount methodsFor: 'transferNet' stamp: 'if 10/22/2018 18:43:01'!
 transferNetTransactionsOn: aTransferNet  
 	
-	^self transactions inject: 0 into: [:netValue :aTransaction | netValue  + (aTransaction transferNet: aTransferNet) ].
+	^self transactions inject: 0 into: [:netValue :aTransaction | netValue  + (aTransaction accept: aTransferNet) ].
 	! !
 
 
-!SummarizingAccount methodsFor: 'investmentNet' stamp: 'nacho 10/20/2018 19:12:28'!
+!SummarizingAccount methodsFor: 'investmentNet' stamp: 'if 10/22/2018 18:35:51'!
 investmentNetOfTransactionsOn: anInvestmentNet 
-	^self transactions inject:0 into: [:netValue :aTransaction | netValue + (aTransaction investmentNet: anInvestmentNet )]! !
+	^self transactions inject:0 into: [:netValue :aTransaction | netValue + (aTransaction accept: anInvestmentNet )]! !
 
 
-!SummarizingAccount methodsFor: 'investmentEarning' stamp: 'nacho 10/20/2018 19:23:19'!
+!SummarizingAccount methodsFor: 'investmentEarning' stamp: 'if 10/22/2018 18:32:13'!
 investmentEarningOfTransactionsOn: anInvestmentEarning 
-	^self transactions inject: 0 into: [:earnings :aTransaction | earnings + (aTransaction investmentEarning: anInvestmentEarning )] ! !
+	^self transactions inject: 0 into: [:earnings :aTransaction | earnings + (aTransaction accept: anInvestmentEarning )] ! !
+
+
+!SummarizingAccount methodsFor: 'visitors' stamp: 'if 10/22/2018 19:20:18'!
+accept: aVisitor 
+	self subclassResponsibility ! !
 
 
 !classDefinition: #Portfolio category: #'PortfolioTreePrinter-Ejercicio'!
@@ -555,6 +707,17 @@ transactionsOf: anAccount
 initializeWithAll: aCollectionOfAccounts
 
 	accounts := aCollectionOfAccounts   ! !
+
+
+!Portfolio methodsFor: 'visitors' stamp: 'if 10/22/2018 19:21:35'!
+accept: aVisitor
+	aVisitor visitPortfolio: self.
+	! !
+
+
+!Portfolio methodsFor: 'accesing ' stamp: 'if 10/22/2018 19:23:51'!
+accounts 
+	^accounts ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -654,6 +817,11 @@ hasRegistered: aTtransaction
 	^ transactions includes: aTtransaction 
 ! !
 
+
+!ReceptiveAccount methodsFor: 'visitors' stamp: 'if 10/22/2018 19:22:31'!
+accept: aVisitor
+	aVisitor visitReceptiveAccount: self.! !
+
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #Transfer
@@ -701,28 +869,3 @@ withAmount: anAmount from:fromAccount to: toAccount
 	fromAccount register: transfer withdrawLeg .
 	toAccount  register: transfer depositLeg .
 	^transfer! !
-
-
-!classDefinition: #TransferNet category: #'PortfolioTreePrinter-Ejercicio'!
-Object subclass: #TransferNet
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'PortfolioTreePrinter-Ejercicio'!
-
-!TransferNet methodsFor: 'transferNet' stamp: 'nacho 10/20/2018 18:26:31'!
-transferNetOf: anAccount 
-	^anAccount transferNetTransactionsOn: self.! !
-
-
-!TransferNet methodsFor: 'transaction transferNet' stamp: 'nacho 10/20/2018 18:37:32'!
-aZeroTransferNet 
-	^0.! !
-
-!TransferNet methodsFor: 'transaction transferNet' stamp: 'nacho 10/20/2018 18:37:55'!
-transferOfTransferDepositWithValue: aValue 
-	^aValue ! !
-
-!TransferNet methodsFor: 'transaction transferNet' stamp: 'nacho 10/20/2018 18:38:44'!
-transferOfTransferWithdrawWithValue: aValue 
-	^-1*aValue ! !
