@@ -11,21 +11,14 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'eg 10/27/2018 11:44:02'!
+!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'if 10/27/2018 15:04:59'!
 lines 
 
-	| lines investmentEarnings semaphore earnings |
+	| lines investmentEarnings |
 	
-	semaphore := Semaphore new.
-	[investmentEarnings := InvestmentNetVisitor for: account.  
-	earnings:= investmentEarnings value. semaphore signal.
-	semaphore  signal.] fork.
-	
-	
+	investmentEarnings := Future with:[( InvestmentNetVisitor for: account) value].
 	lines := (AccountSummaryWithInvestmentEarnings for: account) lines.
-	
-	semaphore wait.
-	lines add: 'Inversiones por ', earnings printString.
+	lines add: 'Inversiones por ', investmentEarnings value printString.
 	
 	
 	 ^ lines
@@ -56,17 +49,14 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'if 10/25/2018 21:54:00'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'if 10/27/2018 15:02:25'!
 lines 
 
-	| lines investmentEarnings semaphore earnings|
+	| lines investmentEarnings|	
 	
-	semaphore := Semaphore new.
-	[investmentEarnings := InvestmentEarningVisitor for: account.
-		earnings:= investmentEarnings value. semaphore signal.] fork.
+	investmentEarnings := Future with: [(InvestmentEarningVisitor for: account) value].
 	lines := (AccountSummary for: account) lines.
-	semaphore wait.
-	lines add: 'Ganancias por ', earnings printString.
+	lines add: 'Ganancias por ', investmentEarnings value printString.
 	
 	 ^ lines! !
 
@@ -686,24 +676,23 @@ for: aReceptiveAccount
 
 !classDefinition: #Future category: #'PortfolioTimeConsuming-Ejercicio'!
 Object subclass: #Future
-	instanceVariableNames: 'semaphore closure'
+	instanceVariableNames: 'semaphore value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
 
-!Future methodsFor: 'initialization' stamp: 'if 10/25/2018 21:04:45'!
+!Future methodsFor: 'initialization' stamp: 'if 10/27/2018 14:59:10'!
 initializeWith: aBlock 
-	semaphore := Semaphore new.  
-	closure := aBlock .
+	semaphore := Semaphore new. 
+	[ value := aBlock value. 
+	  semaphore signal ] fork.
 	! !
 
 
-!Future methodsFor: 'evaluate' stamp: 'if 10/25/2018 21:31:31'!
-evaluate  
-	|lines|
-	[ lines := closure value. semaphore signal.] fork. 
-	semaphore wait.
-	^lines.! !
+!Future methodsFor: 'value' stamp: 'if 10/27/2018 14:59:55'!
+value 
+	semaphore wait. 
+	^value.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
