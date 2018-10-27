@@ -15,10 +15,6 @@ value
 
 	self subclassResponsibility ! !
 
-
-
-
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'AccountTransaction class' category: #'PortfolioTreePrinter-Ejercicio'!
@@ -50,8 +46,6 @@ initializeWithValue: anAmount WithDays: aNumberOfDays WithInterest: anInterestRa
 	interestrate := anInterestRate .! !
 
 
-
-
 !CertificateOfDeposit methodsFor: 'accesing' stamp: 'nacho 10/20/2018 18:57:38'!
 during	 
 	^during ! !
@@ -68,8 +62,6 @@ value
 !CertificateOfDeposit methodsFor: 'evaluating' stamp: 'nacho 10/20/2018 18:58:43'!
 affectBalance: currentBalance 
 	^currentBalance - value! !
-
-
 
 
 !CertificateOfDeposit methodsFor: 'accept' stamp: 'if 10/22/2018 18:14:42'!
@@ -111,10 +103,6 @@ value
 	^ value! !
 
 
-
-
-
-
 !Deposit methodsFor: 'accept' stamp: 'if 10/22/2018 18:14:01'!
 accept: aVisitor 
 	^aVisitor visitDeposit: self.! !
@@ -153,10 +141,6 @@ transfer
 	^transfer! !
 
 
-
-
-
-
 !TransferLeg methodsFor: 'accept' stamp: 'if 10/22/2018 18:15:09'!
 accept: aVisitor 
 	self subclassResponsibility ! !
@@ -193,8 +177,6 @@ initializeWith: aTransfer
 	transfer := aTransfer .! !
 
 
-
-
 !TransferDeposit methodsFor: 'accept' stamp: 'if 10/22/2018 18:15:30'!
 accept: aVisitor 
 	^aVisitor visitTransferDeposit: self.! !
@@ -229,8 +211,6 @@ value
 !TransferWithdraw methodsFor: 'initialization' stamp: 'if 10/18/2018 19:50:39'!
 initializeWith: aTransfer 
 	transfer := aTransfer .! !
-
-
 
 
 !TransferWithdraw methodsFor: 'accept' stamp: 'if 10/22/2018 18:15:53'!
@@ -270,10 +250,6 @@ affectBalance: currentBalance
 value
 
 	^ value ! !
-
-
-
-
 
 
 !Withdraw methodsFor: 'accept' stamp: 'if 10/22/2018 18:16:18'!
@@ -427,7 +403,6 @@ visitWithdraw: aWithdraw
 initializeWith: anAccount  
 	account := anAccount ! !
 
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'InvestmentEarning class' category: #'PortfolioTreePrinter-Ejercicio'!
@@ -567,11 +542,11 @@ value
 	! !
 
 
-!PortfolioTreePrinter methodsFor: 'account' stamp: 'if 10/22/2018 19:53:47'!
+!PortfolioTreePrinter methodsFor: 'account' stamp: 'nacho 10/23/2018 18:45:16'!
 visitPortfolio: aPortfolio 
 	lines add:  (spaces , (namingaccounts at: aPortfolio)).
 	spaces := spaces , ' '.
-	(aPortfolio accounts ) do: [:anAccount | anAccount accept: self]. 
+	(aPortfolio accounts ) do: [:anAccount | anAccount accept: self].
 	self substractSpaces.
 	^lines.
 	! !
@@ -714,10 +689,14 @@ accept: aVisitor
 	aVisitor visitPortfolio: self.
 	! !
 
+!Portfolio methodsFor: 'visitors' stamp: 'nacho 10/23/2018 18:41:48'!
+doAcceptAccounts: anInstruction
+	! !
 
-!Portfolio methodsFor: 'accesing ' stamp: 'if 10/22/2018 19:23:51'!
+
+!Portfolio methodsFor: 'accesing ' stamp: 'nacho 10/23/2018 18:36:59'!
 accounts 
-	^accounts ! !
+	^accounts copy! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
