@@ -5,41 +5,41 @@ TestCase subclass: #TerniLapelliTest
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:27:50'!
 test01GameStartsWithAnEmptyBoardAndXTurn
-	|tablero|
+	|game|
 	
-	tablero := TerniLapelli new.
+	game := TerniLapelli new.
 	
-	self assert: tablero isEmpty. 
-	self assert: tablero currentTurn = #X.
+	self assert: game isEmpty. 
+	self assert: game currentTurn = #X.
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:30:56'!
 test02AfterPlacingXPositionIsOccupiedAndOHasntPlayed
-	|tablero |
-	tablero := TerniLapelli new. 	
-	tablero placeXAt: 1@1.
+	|game |
+	game := TerniLapelli new. 	
+	game placeXAt: 1@1.
 	
-	self assert: tablero numberOfPiecesOnBoard = 1.
-	self assert: tablero OHasntPlayed.
-	self deny: tablero XHasntPlayed.
-	self assert: (tablero at: 1@1) = #X.
-	self assert: tablero currentTurn = #O.
+	self assert: game numberOfPiecesOnBoard = 1.
+	self assert: (game aPlayerHasntPlayed:#O).
+	self deny: (game  aPlayerHasntPlayed: #X).
+	self assert: (game at: 1@1) = #X.
+	self assert: game currentTurn = #O.
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:32:02'!
 test03OCannotStartFirst 
-	|tablero |
-	tablero := TerniLapelli new. 
+	|game |
+	game := TerniLapelli new. 
 	
-	[tablero placeOAt: 1@1]
+	[game placeOAt: 1@1]
 	on:Error
 	do:[
-		:anError | self assert: anError messageText = 'No puede empezar O'.
-		self assert: tablero numberOfPiecesOnBoard = 0.
-		self assert: tablero OHasntPlayed .
-		self assert: tablero currentTurn  = #X.
+		:anError | self assert: anError messageText = 'No es el turno de O'.
+		self assert: game numberOfPiecesOnBoard = 0.
+		self assert: (game aPlayerHasntPlayed: #O).
+		self assert: game currentTurn  = #X.
 	 ] 
 	
 	
@@ -75,7 +75,7 @@ test05APlayerCannotPlayTwiceInARow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:28:50'!
 test06PiecesCannotBePlayedOutOfBounds
 	|tablero |
 	tablero := TerniLapelli new.
@@ -83,7 +83,7 @@ test06PiecesCannotBePlayedOutOfBounds
 	on:Error
 	do:[:anError|
 		self assert: (tablero at:4@4) = nil.
-		self assert: tablero  XHasntPlayed.	 
+		self assert: tablero  XHasntPlayed: #X.	 
 		self assert: anError messageText = 'Posicion invalida'.]
 	
 	
@@ -587,6 +587,42 @@ test30APlayerCannotPlayIfGameIsOver
 	
 	! !
 
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:20:13'!
+test31APlayerCannotMakeAnInvalidMoveWithValidPositions
+	|tablero |
+	tablero := TerniLapelli new.
+	tablero placeXAt: 1@1.
+	[tablero moveOFrom: 3@2 to: 3@1]
+	on:Error
+	do:[:anError | 
+		self assert: anError messageText = 'No se puede mover hasta que se coloquen todas las fichas'.
+		self assert: tablero numberOfPiecesOnBoard = 1.
+		self assert: tablero OHasntPlayed .
+		]
+	
+	
+	
+	! !
+
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:20:46'!
+test31APlayerCannotMoveIfPlacingStageHasntFinished
+	|tablero |
+	tablero := TerniLapelli new.
+	tablero placeXAt: 1@1.
+	tablero placeOAt: 1@2.
+	tablero placeXAt: 1@3.
+	tablero placeOAt: 2@3.
+	tablero placeXAt: 2@2.
+	tablero placeOAt: 3@3. 
+	[tablero moveXFrom: 1@1 to:3@2] on:Error 
+	do:[:anError | 
+		self assert: tablero numberOfPiecesOnBoard = 6.
+		self assert: tablero currentTurn = #X.
+		self assert: (tablero at:1@1) = #X.
+		self assert: anError messageText = 'Movimiento invalido'.].
+	
+	! !
+
 
 !classDefinition: #GameState category: #'Terni-Lapelli'!
 Object subclass: #GameState
@@ -604,8 +640,8 @@ initializeWith: aGame
 moveOFrom: aOriginPoint to:aDestinyPoint 
 	self subclassResponsibility ! !
 
-!GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:04:57'!
-moveXFrom: aOriginPoint to:aDestinyPoint 
+!GameState methodsFor: 'actions' stamp: 'nacho 11/6/2018 18:52:05'!
+moveXFrom: aOriginPoint to: aDestinyPoint 
 	self subclassResponsibility ! !
 
 !GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:03:29'!
@@ -614,6 +650,15 @@ placeOAt: aPoint
 
 !GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:03:21'!
 placeXAt: aPoint 
+	self subclassResponsibility ! !
+
+
+!GameState methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:01:46'!
+currentTurn 
+	self subclassResponsibility ! !
+
+!GameState methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:10:46'!
+winner 
 	self subclassResponsibility ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -634,9 +679,25 @@ GameState subclass: #Moving
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
+!Moving methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:02:01'!
+currentTurn
+	self subclassResponsibility ! !
+
+!Moving methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:12:55'!
+moveOFrom: aOriginPoint to: aDestinyPoint 
+	self subclassResponsibility ! !
+
+!Moving methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:52:13'!
+moveXFrom: aOriginPoint to: aDestinyPoint 
+	self subclassResponsibility ! !
+
 !Moving methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:00'!
 placeXAt: aPoint 
 	^self error:'Movimiento invalido'.! !
+
+!Moving methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:11:29'!
+winner
+	^self error: 'No hay ganador'! !
 
 
 !classDefinition: #MovingO category: #'Terni-Lapelli'!
@@ -646,6 +707,18 @@ Moving subclass: #MovingO
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
+!MovingO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:02:12'!
+currentTurn 
+	^#O! !
+
+!MovingO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:13:12'!
+moveOFrom: aOriginPoint to: aDestinyPoint 
+	^board moveOWhenPlayingOFrom: aOriginPoint to:aDestinyPoint .! !
+
+!MovingO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:52:47'!
+moveXFrom: aOriginPoint to: aDestinyPoint 
+	^self error: 'No es el turno de X'.! !
+
 
 !classDefinition: #MovingX category: #'Terni-Lapelli'!
 Moving subclass: #MovingX
@@ -653,6 +726,18 @@ Moving subclass: #MovingX
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
+
+!MovingX methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:02:23'!
+currentTurn 
+	^#X! !
+
+!MovingX methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:54:19'!
+moveOFrom: aOriginPoint to: aDestinyPoint 
+	^self error: 'No es el turno de O'.! !
+
+!MovingX methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:53:57'!
+moveXFrom: aOriginPoint to: aDestinyPoint 
+	^board moveXWhenPlayingXFrom: aOriginPoint to:aDestinyPoint! !
 
 
 !classDefinition: #Placing category: #'Terni-Lapelli'!
@@ -662,9 +747,29 @@ GameState subclass: #Placing
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
+!Placing methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:02:30'!
+currentTurn 
+	self subclassResponsibility ! !
+
+!Placing methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:16:36'!
+moveOFrom: aOriginPoint to: aDestinyPoint 
+	^self error: 'No se puede mover hasta que se coloquen todas las fichas'! !
+
+!Placing methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:16:32'!
+moveXFrom: aOriginPoint to: aDestinyPoint 
+	^self error: 'No se puede mover hasta que se coloquen todas las fichas'! !
+
+!Placing methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:13:22'!
+placeOAt: aPoint 
+	self subclassResponsibility ! !
+
 !Placing methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:14'!
 placeXAt: aPoint 
 	self subclassResponsibility ! !
+
+!Placing methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:11:48'!
+winner 
+	^self error: 'No hay ganador'! !
 
 
 !classDefinition: #PlacingO category: #'Terni-Lapelli'!
@@ -674,9 +779,17 @@ Placing subclass: #PlacingO
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!PlacingO methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:32'!
+!PlacingO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:02:42'!
+currentTurn
+	^#O! !
+
+!PlacingO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:00:06'!
+placeOAt: aPoint 
+ 	^board placeOWhenPlacingOAt: aPoint.! !
+
+!PlacingO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:49:00'!
 placeXAt: aPoint 
-	^self error:'No es el turno de O'.! !
+	^self error:'No es el turno de X'.! !
 
 
 !classDefinition: #PlacingX category: #'Terni-Lapelli'!
@@ -685,6 +798,14 @@ Placing subclass: #PlacingX
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
+
+!PlacingX methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:02:52'!
+currentTurn
+	^#X! !
+
+!PlacingX methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:49:05'!
+placeOAt: aPoint 
+	^self error:'No es el turno de O'.! !
 
 !PlacingX methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:42:20'!
 placeXAt: aPoint 
@@ -698,9 +819,29 @@ GameState subclass: #Winner
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
+!Winner methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:03:42'!
+currentTurn
+	^ self error: 'Juego terminado'.! !
+
+!Winner methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:17:12'!
+moveOFrom: aOriginPoint to: aDestinyPoint
+	^self error:'Juego terminado'.! !
+
+!Winner methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:17:09'!
+moveXFrom: aOriginPoint to: aDestinyPoint
+	^self error:'Juego terminado'.! !
+
+!Winner methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:16:53'!
+placeOAt: aPoint 
+	^self error:'Juego terminado'.! !
+
 !Winner methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:58'!
 placeXAt: aPoint 
 	^self error:'Juego terminado'.! !
+
+!Winner methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:11:58'!
+winner 
+	self subclassResponsibility ! !
 
 
 !classDefinition: #WinnerO category: #'Terni-Lapelli'!
@@ -710,6 +851,10 @@ Winner subclass: #WinnerO
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
+!WinnerO methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:12:11'!
+winner 
+	^#O! !
+
 
 !classDefinition: #WinnerX category: #'Terni-Lapelli'!
 Winner subclass: #WinnerX
@@ -717,6 +862,10 @@ Winner subclass: #WinnerX
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
+
+!WinnerX methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:12:20'!
+winner 
+	^#X! !
 
 
 !classDefinition: #Position category: #'Terni-Lapelli'!
@@ -757,16 +906,65 @@ withOwner: aPlayer withCoordinate: aPoint
 
 !classDefinition: #TerniLapelli category: #'Terni-Lapelli'!
 Object subclass: #TerniLapelli
-	instanceVariableNames: 'positions turn winner state'
+	instanceVariableNames: 'positions state'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:08:05'!
+assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint 
+	|distanciaPunto distanciaCorrecta|
+	
+	distanciaPunto := (aDestinyPoint) - (aOriginPoint).
+
+	(aDestinyPoint x < 1 or: aDestinyPoint x > 3) ifTrue:[^self error:'Movimiento invalido'].
+	(aDestinyPoint y < 1 or: aDestinyPoint y > 3) ifTrue:[^self error:'Movimiento invalido'].
+	
+	distanciaCorrecta := ((distanciaPunto x) * (distanciaPunto x) ~= 1) and:[(distanciaPunto x) * (distanciaPunto x) ~= 0].
+	distanciaCorrecta ifTrue:[^self error:'Movimiento invalido'].
+	distanciaCorrecta := ((distanciaPunto y) * (distanciaPunto y) ~= 1) and:[(distanciaPunto y) * (distanciaPunto y) ~= 0].
+	distanciaCorrecta ifTrue:[^self error:'Movimiento invalido'].
+	! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:05:07'!
+assertPosition: positionOrigin isFrom: aPlayer 
+	((self at: positionOrigin) owner = aPlayer)  ifFalse:[^self error: 'La ficha no le pertenece al jugador']
+	! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 17:53:34'!
+assertPositionIsFree: aPosition 
+	(aPosition owner ~= #NoOwner) ifTrue:[ ^self error: 'Ya hay una ficha en esa posicion' ].
+	! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 17:56:51'!
+assertPositionIsValid: aPoint
+	
+	self checkValidCoordinate: aPoint x.
+	self checkValidCoordinate: aPoint y.! !
 
 !TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:07:53'!
 atPoint: aPoint
 	|arrayIndex|
 	arrayIndex := ((aPoint y)  -1) * 3 + (aPoint  x).
 	^positions at:arrayIndex.! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 17:47:59'!
+checkPlayersHaveFinishedPlacing 
+	^self numberOfPiecesOnBoard = 6
+! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 17:56:19'!
+checkValidCoordinate: aCoordinate
+	(aCoordinate < 1 or: aCoordinate > 3) ifTrue:[^self error:'Posicion invalida'].! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 17:42:43'!
+checkWinner: aPlayerPiece 
+	|pieces win|	
+	pieces := self getPiecesOf: aPlayerPiece .	
+	^win := (pieces size) = 3 and:[
+		(self hasCompleteALine: pieces) or:[ self hasCompletedADiagonal: pieces]
+		] .
+	! !
 
 !TerniLapelli methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:29:24'!
 checkWinnerO
@@ -829,7 +1027,7 @@ hasUpDiagonal: aCollectionOfPositions
 	
 	! !
 
-!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:34:52'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:50:40'!
 initialize 
 	|initialPositions rangeColumns rangeRows|
 	
@@ -845,29 +1043,96 @@ initialize
 			].].
 	
 	positions := initialPositions .
-	state := PlacingX for: positions.! !
+	state := PlacingX for: self.! !
 
 !TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:40:17'!
 isEmpty
 	^self numberOfPiecesOnBoard = 0.! !
 
-!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:44:27'!
-placeXWhenPlacingXAt: aPoint 
-	|position|
-	(aPoint x < 1 or: aPoint x > 3) ifTrue:[^self error:'Posicion invalida'].
-	(aPoint y < 1 or: aPoint y > 3) ifTrue:[^self error:'Posicion invalida']. 
-	position := self atPoint: aPoint. 
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:09:08'!
+moveOWhenPlayingOFrom: aOriginPoint to:aDestinyPoint 
+	| positionDestiny positionOrigin|
+	
+	self assertPositionIsValid: aDestinyPoint.
+	self assertPositionIsValid: aOriginPoint .
+	
+	positionDestiny := self atPoint: aDestinyPoint .
+	positionOrigin := self atPoint: aOriginPoint .
+	self assertPositionIsFree: positionDestiny.
+	self assertPosition: aOriginPoint isFrom: #O.
+	self assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint .
+
+	positionDestiny owner: #O.
+	positionOrigin  owner: #NoOwner.
+	
+	state := (self stateAfterMoving: #O nextMovingState: MovingX nextWinnerState: WinnerO) for: self.
+
+	! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:08:28'!
+moveXWhenPlayingXFrom: aOriginPoint to:aDestinyPoint 
+	| positionDestiny positionOrigin|
+	
+	self assertPositionIsValid: aDestinyPoint.
+	self assertPositionIsValid: aOriginPoint .
+	
+	positionDestiny := self atPoint: aDestinyPoint .
+	positionOrigin := self atPoint: aOriginPoint .
+	self assertPositionIsFree: positionDestiny.
+	self assertPosition: aOriginPoint isFrom: #X.
+	self assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint .
+
+	positionDestiny owner: #X.
+	positionOrigin  owner: #NoOwner.
+	
+	state := (self stateAfterMoving: #X nextMovingState: MovingO nextWinnerState: WinnerX) for: self.
+
+	! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:59:51'!
+placeOWhenPlacingOAt: aPoint 
+	| position |
+	self assertPositionIsValid: aPoint.
+	position := self atPoint: aPoint.
+	self assertPositionIsFree: position.
+	position owner: #O.
+	state := (self stateAfterPlacing: #O nextPlacingState: PlacingX nextMovingState: MovingX nextWinnerState: WinnerO) for: self.
+
 	
 	! !
 
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:59:51'!
+placeXWhenPlacingXAt: aPoint 
+	| position |
+	self assertPositionIsValid: aPoint.
+	position := self atPoint: aPoint.
+	self assertPositionIsFree: position.
+	position owner: #X.
+	state := (self stateAfterPlacing: #X nextPlacingState: PlacingO nextMovingState: MovingO nextWinnerState: WinnerX) for: self.
 
-!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:37:03'!
-OHasntPlayed 
-	^(self positions anySatisfy: [:aPosition | (aPosition owner) = #O]) not.! !
+	
+	! !
 
-!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 17:37:45'!
-XHasntPlayed 
-	^(self positions anySatisfy: [:aPosition | aPosition owner = #X]) not.! !
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:01:29'!
+stateAfterMoving: aPlayerPiece nextMovingState: aMovingState nextWinnerState: aWinnerState
+	
+	(self checkWinner: aPlayerPiece) ifTrue: [ ^aWinnerState]. 
+		
+	^aMovingState.! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 18:59:51'!
+stateAfterPlacing: aPlayerPiece nextPlacingState: aPlacingState nextMovingState: aMovingState nextWinnerState: aWinnerState 
+	
+	(self checkWinner: aPlayerPiece) ifTrue: [ ^aWinnerState]. 
+	
+	(self checkPlayersHaveFinishedPlacing ) ifTrue:[^aMovingState]. 
+	
+	^aPlacingState.! !
+
+
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 19:30:13'!
+aPlayerHasntPlayed: aPlayer 
+	^(self positions anySatisfy: [:aPosition | aPosition owner = aPlayer]) not.! !
 
 !TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 17:39:26'!
 at: aPoint 
@@ -878,9 +1143,13 @@ changeTurn
 	
 	^(TurnState stateForGame: self) nextTurn .! !
 
-!TerniLapelli methodsFor: 'private' stamp: 'eg 11/3/2018 16:53:57'!
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 18:01:34'!
 currentTurn
-	^turn.! !
+	^state currentTurn! !
+
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 17:43:19'!
+getPiecesOf: aPlayer
+	^positions select:[:aPosition | (aPosition owner) = aPlayer]! !
 
 !TerniLapelli methodsFor: 'private' stamp: 'eg 11/3/2018 18:39:10'!
 hasWon: aPlayer.
@@ -916,10 +1185,10 @@ moveOFrom: aOriginPoint to:aDestinyPoint
 	self checkWinnerO.
 	! !
 
-!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:39:06'!
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 18:51:50'!
 moveXFrom: aOriginPoint to:aDestinyPoint
-		
-	|distanciaCorrecta distanciaPunto positionDestiny positionOrigin|
+	^state moveXFrom: aOriginPoint to: aDestinyPoint.
+	"|distanciaCorrecta distanciaPunto positionDestiny positionOrigin|
 	
 	self winner ~= nil ifTrue:[^self error: 'Juego terminado'].
 
@@ -948,7 +1217,7 @@ moveXFrom: aOriginPoint to:aDestinyPoint
 	positionDestiny owner: #X.
 	positionOrigin owner: #NoOwner.	  
 	self changeTurn.
-	self checkWinnerX.
+	self checkWinnerX."
 	
 	! !
 
@@ -968,59 +1237,21 @@ numberOfPiecesOnBoard
 oPieces
 	^positions select:[:aPosition | (aPosition owner) = #O]! !
 
-!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 20:17:48'!
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 18:47:59'!
 placeOAt: aPoint 
+	^state placeOAt: aPoint.! !
 
-	|position|
-	(positions isEmpty) ifTrue:[^self error:'No puede empezar O'].
-	(aPoint x < 1 or: aPoint x > 3) ifTrue:[^self error:'Posicion invalida'].
-	(aPoint y < 1 or: aPoint y > 3) ifTrue:[^self error:'Posicion invalida'].
-		positions isEmpty 
-	ifFalse:[
-	self currentTurn = #X ifTrue:['No se puede jugar dos veces seguidas por un mismo jugador'].
-	].
-	(self oPieces) size = 3 ifTrue:[^self error:'No se pueden jugar mas de tres fichas'].
-	position := self atPoint: aPoint.
-	
-	(position owner = #NoOwner) 
-		ifTrue:[
-		position owner: #O.
-		self changeTurn.
-		self checkWinnerO 
-		] 
-		ifFalse:[
-			^self error: 'Ya hay una ficha en esa posicion'		
-		]. ! !
-
-!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 21:38:59'!
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 18:47:36'!
 placeXAt: aPoint 
-	^state placeXAt: aPoint.
-	"|position|
-	(aPoint x < 1 or: aPoint x > 3) ifTrue:[^self error:'Posicion invalida'].
-	(aPoint y < 1 or: aPoint y > 3) ifTrue:[^self error:'Posicion invalida'].
-	positions isEmpty 
-	ifFalse:[
-	self currentTurn = #O ifTrue:[^self error:'No se puede jugar dos veces seguidas por un mismo jugador']].
-	position := self atPoint: aPoint.
-	
-	self xPieces) size = 3 ifTrue:[^self error:'No se pueden jugar mas de tres fichas'].
-	(position owner = #NoOwner) 
-		ifTrue:[
-		position owner: #X.
-		self changeTurn.
-		self checkWinnerX 
-		] 
-		ifFalse:[
-			^self error: 'Ya hay una ficha en esa posicion'		
-		]. "! !
+	^state placeXAt: aPoint.! !
 
 !TerniLapelli methodsFor: 'private' stamp: 'if 11/1/2018 20:48:22'!
 positions 
 	^positions ! !
 
-!TerniLapelli methodsFor: 'private' stamp: 'eg 11/3/2018 18:38:41'!
+!TerniLapelli methodsFor: 'private' stamp: 'nacho 11/6/2018 19:10:35'!
 winner
-	^winner.! !
+	^state winner! !
 
 !TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:33:05'!
 xPieces
