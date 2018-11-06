@@ -5,20 +5,20 @@ TestCase subclass: #TerniLapelliTest
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 17:25:56'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test01GameStartsWithAnEmptyBoardAndXTurn
 	|tablero|
 	
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	
 	self assert: tablero isEmpty. 
 	self assert: tablero currentTurn = #X.
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 17:27:01'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test02AfterPlacingXPositionIsOccupiedAndOHasntPlayed
 	|tablero |
-	tablero := Tablero new. 	
+	tablero := TerniLapelli new. 	
 	tablero placeXAt: 1@1.
 	
 	self assert: tablero numberOfPiecesOnBoard = 1.
@@ -28,10 +28,10 @@ test02AfterPlacingXPositionIsOccupiedAndOHasntPlayed
 	self assert: tablero currentTurn = #O.
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 17:28:42'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test03OCannotStartFirst 
 	|tablero |
-	tablero := Tablero new. 
+	tablero := TerniLapelli new. 
 	
 	[tablero placeOAt: 1@1]
 	on:Error
@@ -45,55 +45,54 @@ test03OCannotStartFirst
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 17:29:29'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test04PiecesCannotBePlayedOnOccupiedSpots
 	|tablero |
-	tablero := Tablero new. 
+	tablero := TerniLapelli new. 
 	tablero placeXAt: 1@1. 
 	
 	[tablero placeOAt: 1@1.]
 	on:Error
 	do:[:anError | 
-		self assert: tablero lastPlayerPlayed = #X. 
-		self assert: tablero lastPositionPlaced = (1@1).
+		self assert: (tablero at:1@1) = #X.
 		self assert: tablero OHasntPlayed.
 	     self assert: tablero currentTurn  = #O.
 		self assert: anError messageText =  'Ya hay una ficha en esa posicion']
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 15:53:23'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test05APlayerCannotPlayTwiceInARow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1. 	
 	[tablero placeXAt: 1@2]
 	on:Error
 	do:[:anError | 
-		self assert: tablero lastPlayerPlayed = #X. 
-		self assert: tablero lastPositionPlaced = (1@1).
+		self assert: (tablero at:1@1) = #X.
+		self assert: tablero currentTurn = #O.
 		self assert: anError messageText =  'No se puede jugar dos veces seguidas por un mismo jugador']
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 15:54:35'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test06PiecesCannotBePlayedOutOfBounds
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	[tablero placeXAt: 4@4.]
 	on:Error
 	do:[:anError|
-		self deny: tablero lastPositionPlaced = (4@4). 
+		self assert: (tablero at:4@4) = nil.
 		self assert: tablero  XHasntPlayed.	 
 		self assert: anError messageText = 'Posicion invalida'.]
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 15:55:10'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test07APlayerCannotHaveMoreThanThreePiecesOnBoard
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 1@3.
@@ -103,18 +102,18 @@ test07APlayerCannotHaveMoreThanThreePiecesOnBoard
 	[tablero placeXAt: 3@1] on:Error 
 	do:[:anError | 
 		self assert: tablero numberOfPiecesOnBoard = 6.
-		self assert: tablero lastPositionPlaced  = (3@3).
-		self assert: tablero lastPlayerPlayed = #O.
+		self assert: (tablero at:3@3) = #O.
+		self assert: tablero currentTurn = #X.
 		self assert: anError messageText = 'No se pueden jugar mas de tres fichas'.].
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 16:35:33'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test08PlayersCanOnlyMovePiecesTheyOwn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 1@3.
@@ -124,7 +123,7 @@ test08PlayersCanOnlyMovePiecesTheyOwn
 	[tablero moveXFrom: 3@3 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: tablero numberOfPiecesOnBoard = 6.
-		self assert: tablero lastPlayerPlayed = #O.
+		self assert: tablero currentTurn = #X.
 		self assert: (tablero at:3@3) = #O.
 		self assert: anError messageText = 'Movimiento invalido'.].
 	
@@ -132,10 +131,10 @@ test08PlayersCanOnlyMovePiecesTheyOwn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 16:36:10'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test09PlayersCannotMovePiecesFromPositionsThatWasntMarked
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 1@3.
@@ -145,18 +144,18 @@ test09PlayersCannotMovePiecesFromPositionsThatWasntMarked
 	[tablero moveXFrom: 3@1 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: tablero numberOfPiecesOnBoard = 6.
-		self assert: tablero lastPlayerPlayed = #O.
-		self assert: (tablero at:3@1) = nil. 
+		self assert: tablero currentTurn = #X.
+		self assert: (tablero at:3@1) = #NoOwner. 
 		self assert: anError messageText = 'Movimiento invalido'.].
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 16:36:56'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test10PlayersCannotMovePiecesOutOfBounds
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 1@3.
@@ -166,7 +165,7 @@ test10PlayersCannotMovePiecesOutOfBounds
 	[tablero moveXFrom: 1@1 to:0@0] on:Error 
 	do:[:anError | 
 		self assert: tablero numberOfPiecesOnBoard = 6.
-		self assert: tablero lastPlayerPlayed = #O.
+		self assert: tablero currentTurn = #X.
 		self assert: (tablero at:1@1) = #X.
 		self assert: anError messageText = 'Movimiento invalido'.].
 	
@@ -174,10 +173,10 @@ test10PlayersCannotMovePiecesOutOfBounds
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 16:39:31'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test11PiecesCanOnlyBeMovedToDirectNeighbours
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 1@3.
@@ -187,7 +186,7 @@ test11PiecesCanOnlyBeMovedToDirectNeighbours
 	[tablero moveXFrom: 1@1 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: tablero numberOfPiecesOnBoard = 6.
-		self assert: tablero lastPlayerPlayed = #O.
+		self assert: tablero currentTurn = #X.
 		self assert: (tablero at:1@1) = #X.
 		self assert: anError messageText = 'Movimiento invalido'.].
 	
@@ -195,10 +194,10 @@ test11PiecesCanOnlyBeMovedToDirectNeighbours
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 18:40:47'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test12PiecesCanBeMovedToAValidPosition
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 1@3.
@@ -210,17 +209,17 @@ test12PiecesCanBeMovedToAValidPosition
 	self assert: tablero numberOfPiecesOnBoard = 6.
 	self assert: tablero currentTurn = #O.
 	self assert: (tablero at:2@1) = #X.
-	self assert: (tablero at:2@2) = nil.
+	self assert: (tablero at:2@2) = #NoOwner.
 	self assert: tablero winner = nil.
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 18:47:26'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test13APlayerWinOnPlacingWhenCompletesFirstColumn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 2@2.
 	tablero placeXAt: 1@2.
@@ -235,10 +234,10 @@ test13APlayerWinOnPlacingWhenCompletesFirstColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:32:43'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test14APlayerWinOnPlacingWhenCompletesSecondColumn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 2@2.
 	tablero placeXAt: 1@2.
@@ -254,10 +253,10 @@ test14APlayerWinOnPlacingWhenCompletesSecondColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:38:52'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test15APlayerWinOnPlacingWhenCompletesThirdColumn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 3@3.
 	tablero placeXAt: 1@2.
@@ -273,10 +272,10 @@ test15APlayerWinOnPlacingWhenCompletesThirdColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:39:58'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test16APlayerWinOnPlacingWhenCompletesFirstRow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 3@3.
 	tablero placeXAt: 2@1.
@@ -292,10 +291,10 @@ test16APlayerWinOnPlacingWhenCompletesFirstRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:41:37'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test17APlayerWinOnPlacingWhenCompletesSecondRow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 2@1.
@@ -311,10 +310,10 @@ test17APlayerWinOnPlacingWhenCompletesSecondRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:44:28'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test18APlayerWinOnPlacingWhenCompletesThirdRow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@3.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 2@3.
@@ -330,10 +329,10 @@ test18APlayerWinOnPlacingWhenCompletesThirdRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:45:45'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test19APlayerWinOnPlacingWhenCompletesUpDiagonal
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 2@2.
@@ -349,10 +348,10 @@ test19APlayerWinOnPlacingWhenCompletesUpDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:47:10'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test20APlayerWinOnPlacingWhenCompletesDownDiagonal
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@3.
 	tablero placeXAt: 1@2.
@@ -369,10 +368,10 @@ test20APlayerWinOnPlacingWhenCompletesDownDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:50:41'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test21APlayerWinOnMovingWhenCompletesFirstColumn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 2@2.
 	tablero placeXAt: 1@2.
@@ -389,10 +388,10 @@ test21APlayerWinOnMovingWhenCompletesFirstColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:53:57'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test22APlayerWinOnMovingWhenCompletesSecondColumn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 2@2.
 	tablero placeXAt: 1@2.
@@ -411,10 +410,10 @@ test22APlayerWinOnMovingWhenCompletesSecondColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:59:10'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test23APlayerWinOnMovingWhenCompletesThirdColumn
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 3@1.
 	tablero placeOAt: 1@1.
 	tablero placeXAt: 3@2.
@@ -432,10 +431,10 @@ test23APlayerWinOnMovingWhenCompletesThirdColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:00:36'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test24APlayerWinOnMovingWhenCompleteFirstRow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 2@1.
@@ -453,10 +452,10 @@ test24APlayerWinOnMovingWhenCompleteFirstRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:01:55'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test25APlayerWinOnMovingWhenCompleteSecondRow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@2.
 	tablero placeOAt: 1@1.
 	tablero placeXAt: 2@2.
@@ -474,10 +473,10 @@ test25APlayerWinOnMovingWhenCompleteSecondRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:13:39'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test26APlayerWinOnMovingWhenCompleteThirdRow
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@3.
 	tablero placeOAt: 1@1.
 	tablero placeXAt: 2@3.
@@ -495,10 +494,10 @@ test26APlayerWinOnMovingWhenCompleteThirdRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:15:02'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test27APlayerWinOnMovingWhenCompleteUpDiagonal
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 1@2.
 	tablero placeXAt: 2@2.
@@ -516,10 +515,10 @@ test27APlayerWinOnMovingWhenCompleteUpDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:16:55'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test28APlayerWinOnMovingWhenCompleteDownDiagonal
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@2.
 	tablero placeOAt: 1@3.
 	tablero placeXAt: 1@1.
@@ -538,10 +537,10 @@ test28APlayerWinOnMovingWhenCompleteDownDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:19:53'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test29APlayerCannotMoveToTheSamePosition
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@2.
 	tablero placeOAt: 1@3.
 	tablero placeXAt: 1@1.
@@ -563,10 +562,10 @@ test29APlayerCannotMoveToTheSamePosition
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 20:24:25'!
+!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:05:01'!
 test30APlayerCannotPlayIfGameIsOver
 	|tablero |
-	tablero := Tablero new.
+	tablero := TerniLapelli new.
 	tablero placeXAt: 1@1.
 	tablero placeOAt: 2@2.
 	tablero placeXAt: 1@2.
@@ -589,14 +588,187 @@ test30APlayerCannotPlayIfGameIsOver
 	! !
 
 
-!classDefinition: #Tablero category: #'Terni-Lapelli'!
-Object subclass: #Tablero
-	instanceVariableNames: 'positions turn winner'
+!classDefinition: #GameState category: #'Terni-Lapelli'!
+Object subclass: #GameState
+	instanceVariableNames: 'board'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:29:24'!
+!GameState methodsFor: 'initialization' stamp: 'if 11/5/2018 21:35:32'!
+initializeWith: aGame 
+	board := aGame .! !
+
+
+!GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:04:53'!
+moveOFrom: aOriginPoint to:aDestinyPoint 
+	self subclassResponsibility ! !
+
+!GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:04:57'!
+moveXFrom: aOriginPoint to:aDestinyPoint 
+	self subclassResponsibility ! !
+
+!GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:03:29'!
+placeOAt: aPoint 
+	self subclassResponsibility ! !
+
+!GameState methodsFor: 'actions' stamp: 'if 11/5/2018 21:03:21'!
+placeXAt: aPoint 
+	self subclassResponsibility ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'GameState class' category: #'Terni-Lapelli'!
+GameState class
+	instanceVariableNames: ''!
+
+!GameState class methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 20:54:42'!
+for: aGame
+	^self new initializeWith: aGame.! !
+
+
+!classDefinition: #Moving category: #'Terni-Lapelli'!
+GameState subclass: #Moving
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!Moving methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:00'!
+placeXAt: aPoint 
+	^self error:'Movimiento invalido'.! !
+
+
+!classDefinition: #MovingO category: #'Terni-Lapelli'!
+Moving subclass: #MovingO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+
+!classDefinition: #MovingX category: #'Terni-Lapelli'!
+Moving subclass: #MovingX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+
+!classDefinition: #Placing category: #'Terni-Lapelli'!
+GameState subclass: #Placing
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!Placing methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:14'!
+placeXAt: aPoint 
+	self subclassResponsibility ! !
+
+
+!classDefinition: #PlacingO category: #'Terni-Lapelli'!
+Placing subclass: #PlacingO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!PlacingO methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:32'!
+placeXAt: aPoint 
+	^self error:'No es el turno de O'.! !
+
+
+!classDefinition: #PlacingX category: #'Terni-Lapelli'!
+Placing subclass: #PlacingX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!PlacingX methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:42:20'!
+placeXAt: aPoint 
+ 	^board placeXWhenPlacingXAt: aPoint.! !
+
+
+!classDefinition: #Winner category: #'Terni-Lapelli'!
+GameState subclass: #Winner
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!Winner methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:40:58'!
+placeXAt: aPoint 
+	^self error:'Juego terminado'.! !
+
+
+!classDefinition: #WinnerO category: #'Terni-Lapelli'!
+Winner subclass: #WinnerO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+
+!classDefinition: #WinnerX category: #'Terni-Lapelli'!
+Winner subclass: #WinnerX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+
+!classDefinition: #Position category: #'Terni-Lapelli'!
+Object subclass: #Position
+	instanceVariableNames: 'owner coordinate'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!Position methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 17:09:42'!
+coordinate
+	^coordinate.! !
+
+!Position methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 17:13:15'!
+initializeWith:aPlayer With:aPoint
+	owner := aPlayer .
+	coordinate  := aPoint .
+	! !
+
+!Position methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 17:09:28'!
+owner
+	^owner.! !
+
+!Position methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 17:15:36'!
+owner: aPlayer
+	owner := aPlayer .! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Position class' category: #'Terni-Lapelli'!
+Position class
+	instanceVariableNames: ''!
+
+!Position class methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 17:11:57'!
+withOwner: aPlayer withCoordinate: aPoint
+	^self new initializeWith:aPlayer With:aPoint.! !
+
+
+!classDefinition: #TerniLapelli category: #'Terni-Lapelli'!
+Object subclass: #TerniLapelli
+	instanceVariableNames: 'positions turn winner state'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:07:53'!
+atPoint: aPoint
+	|arrayIndex|
+	arrayIndex := ((aPoint y)  -1) * 3 + (aPoint  x).
+	^positions at:arrayIndex.! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:29:24'!
 checkWinnerO
 	|oPieces win|
 	
@@ -608,7 +780,7 @@ checkWinnerO
 	
 	 win ifTrue:[self hasWon: #O]! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:28:54'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:28:54'!
 checkWinnerX
 	|xPieces win|
 	
@@ -620,7 +792,7 @@ checkWinnerX
 	win ifTrue:[self hasWon: #X]
 	 ! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:25:12'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:25:12'!
 hasCompleteAColumnOrRow: aCollectionOfIndexes
 	|aSample|
 	aSample := aCollectionOfIndexes first.
@@ -629,82 +801,95 @@ hasCompleteAColumnOrRow: aCollectionOfIndexes
 
 	! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:16:15'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:28:55'!
 hasCompleteALine: aCollectionOfPositions
 	|columns rows|
-	columns := aCollectionOfPositions collect:[:aPosition | (aPosition at:2) y ].
+	columns := aCollectionOfPositions collect:[:aPosition | (aPosition coordinate) y].
 	
-	rows := aCollectionOfPositions collect:[:aPosition | (aPosition at:2) x ].
+	rows := aCollectionOfPositions collect:[:aPosition | (aPosition coordinate) x ].
 	
 	^ (self hasCompleteAColumnOrRow: columns) or:[ self hasCompleteAColumnOrRow: rows].! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:21:54'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:21:54'!
 hasCompletedADiagonal: aCollectionOfPositions
 
 	^ (self hasUpDiagonal: aCollectionOfPositions) or:[ self hasDownDiagonal: aCollectionOfPositions].! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:37:15'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:29:20'!
 hasDownDiagonal: aCollectionOfPositions
 
-	^aCollectionOfPositions allSatisfy: [:aPosition |  ((aPosition at:2) x + (aPosition at:2) y) = 4].
+	^aCollectionOfPositions allSatisfy: [:aPosition |  ((aPosition coordinate) x + (aPosition coordinate) y) = 4].
 	
 	! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 19:36:13'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:29:35'!
 hasUpDiagonal: aCollectionOfPositions
 
-	^aCollectionOfPositions allSatisfy: [:aPosition |  (aPosition at:2)x  = (aPosition at:2) y].
+	^aCollectionOfPositions allSatisfy: [:aPosition |  (aPosition coordinate )x  = (aPosition coordinate ) y].
 	
 	! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'eg 11/3/2018 17:54:05'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:34:52'!
 initialize 
-	positions := OrderedCollection new.
-	turn := #X.
-	winner := nil.! !
+	|initialPositions rangeColumns rangeRows|
+	
+	rangeColumns  := (1 to: 3) asOrderedCollection .
+	rangeRows  := (1 to: 3) asOrderedCollection .
+	initialPositions  := OrderedCollection new.
+	
+	rangeColumns do:[:aColumnIndex |
+		rangeRows do:[ :aRowIndex |
+ 			|position|
+			position := Position withOwner:#NoOwner withCoordinate:(aRowIndex @aColumnIndex).
+			initialPositions add:position. 
+			].].
+	
+	positions := initialPositions .
+	state := PlacingX for: positions.! !
 
-!Tablero methodsFor: 'as yet unclassified' stamp: 'if 11/1/2018 20:34:15'!
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 18:40:17'!
 isEmpty
-	^positions isEmpty .! !
+	^self numberOfPiecesOnBoard = 0.! !
+
+!TerniLapelli methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 21:44:27'!
+placeXWhenPlacingXAt: aPoint 
+	|position|
+	(aPoint x < 1 or: aPoint x > 3) ifTrue:[^self error:'Posicion invalida'].
+	(aPoint y < 1 or: aPoint y > 3) ifTrue:[^self error:'Posicion invalida']. 
+	position := self atPoint: aPoint. 
+	
+	! !
 
 
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 21:15:07'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:37:03'!
 OHasntPlayed 
-	^(self positions anySatisfy: [:aPosition | aPosition first = #O]) not.! !
+	^(self positions anySatisfy: [:aPosition | (aPosition owner) = #O]) not.! !
 
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 21:14:57'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 17:37:45'!
 XHasntPlayed 
-	^(self positions anySatisfy: [:aPosition | aPosition first = #X]) not.! !
+	^(self positions anySatisfy: [:aPosition | aPosition owner = #X]) not.! !
 
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 19:51:48'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 17:39:26'!
 at: aPoint 
-	positions detect: [:aPosition| aPosition last = aPoint ] ifFound:[:aPosition| ^aPosition first]  ifNone: [^nil] ! !
+	positions detect: [:aPosition| aPosition coordinate = aPoint ] ifFound:[:aPosition| ^aPosition owner ]  ifNone: [^nil] ! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 17:28:18'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 19:19:09'!
 changeTurn
-	turn = #O ifTrue:[turn := #X] ifFalse:[turn := #O]! !
+	
+	^(TurnState stateForGame: self) nextTurn .! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 16:53:57'!
+!TerniLapelli methodsFor: 'private' stamp: 'eg 11/3/2018 16:53:57'!
 currentTurn
 	^turn.! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 18:39:10'!
+!TerniLapelli methodsFor: 'private' stamp: 'eg 11/3/2018 18:39:10'!
 hasWon: aPlayer.
 	winner := aPlayer .! !
 
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 21:08:36'!
-lastPlayerPlayed 
-	^self positions last first! !
-
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 21:08:42'!
-lastPositionPlaced 
-	positions ifNotEmpty: [^self positions last second]. 
-	^nil! !
-
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 20:27:08'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:54:48'!
 moveOFrom: aOriginPoint to:aDestinyPoint
 		
-	|distancia distanciaPunto|
+	|distancia distanciaPunto positionDestiny positionOrigin|
 	
 	self winner ~= nil ifTrue:[^self error: 'Juego terminado'].
 	
@@ -718,23 +903,23 @@ moveOFrom: aOriginPoint to:aDestinyPoint
 	
 	(distancia * distancia ~= 1) ifTrue:[^self error:'Movimiento invalido'].
 	
-	(self at:aDestinyPoint) ~= nil ifTrue:[^self error:'Movimiento invalido'].
-	
-	self positions detect: [:aPosition | aPosition last = aOriginPoint ] 
-	ifFound:[
-		:aPosition | aPosition first = #X ifTrue:[^self error: 'Movimiento invalido'].
-		aPosition at: 2 put:aDestinyPoint .
-		self changeTurn .
-		self checkWinnerO .
-		]  
-	ifNone:[
-		^self error: 'Movimiento invalido'.
-		] ! !
+	(self at:aDestinyPoint) ~= #NoOwner ifTrue:[^self error:'Movimiento invalido'].
+	(self at:aOriginPoint ) ~= #O ifTrue:[^self error:'Movimiento invalido'].
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 20:27:04'!
+	
+	positionDestiny := self atPoint: aDestinyPoint .
+	positionOrigin := self atPoint: aOriginPoint .
+	
+	positionDestiny owner: #O.
+	positionOrigin owner: #NoOwner.	  
+	self changeTurn.
+	self checkWinnerO.
+	! !
+
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:39:06'!
 moveXFrom: aOriginPoint to:aDestinyPoint
 		
-	|distanciaCorrecta distanciaPunto |
+	|distanciaCorrecta distanciaPunto positionDestiny positionOrigin|
 	
 	self winner ~= nil ifTrue:[^self error: 'Juego terminado'].
 
@@ -753,29 +938,40 @@ moveXFrom: aOriginPoint to:aDestinyPoint
 	distanciaCorrecta ifTrue:[^self error:'Movimiento invalido'].
 	
 	
-	(self at:aDestinyPoint) ~= nil ifTrue:[^self error:'Movimiento invalido'].
+	(self at:aDestinyPoint) ~= #NoOwner ifTrue:[^self error:'Movimiento invalido'].
+	(self at:aOriginPoint ) ~= #X ifTrue:[^self error:'Movimiento invalido'].
+
 	
-	self positions detect: [:aPosition | aPosition last = aOriginPoint ] 
-	ifFound:[
-		:aPosition | aPosition first = #O ifTrue:[^self error: 'Movimiento invalido'].
-		aPosition at: 2 put:aDestinyPoint .
-		self changeTurn .
-		self checkWinnerX .
-		]  
-	ifNone:[
-		^self error: 'Movimiento invalido'.
-		] ! !
+	positionDestiny := self atPoint: aDestinyPoint .
+	positionOrigin := self atPoint: aOriginPoint .
+	
+	positionDestiny owner: #X.
+	positionOrigin owner: #NoOwner.	  
+	self changeTurn.
+	self checkWinnerX.
+	
+	! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 15:52:46'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 19:17:39'!
+nextTurnIsO
+	turn := #O.! !
+
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 19:17:44'!
+nextTurnIsX
+	turn := #X.! !
+
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:53:08'!
 numberOfPiecesOnBoard 
-	^positions size! !
+	^positions inject:0 into:[:numberOfPieces :aPosition |  (aPosition owner ~= #NoOwner) ifTrue:[ numberOfPieces +1] ifFalse:[numberOfPieces]].! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 19:27:50'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:35:46'!
 oPieces
-	^positions select:[:aPosition | (aPosition at:1) = #O]! !
+	^positions select:[:aPosition | (aPosition owner) = #O]! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 19:26:48'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 20:17:48'!
 placeOAt: aPoint 
+
+	|position|
 	(positions isEmpty) ifTrue:[^self error:'No puede empezar O'].
 	(aPoint x < 1 or: aPoint x > 3) ifTrue:[^self error:'Posicion invalida'].
 	(aPoint y < 1 or: aPoint y > 3) ifTrue:[^self error:'Posicion invalida'].
@@ -783,52 +979,89 @@ placeOAt: aPoint
 	ifFalse:[
 	self currentTurn = #X ifTrue:['No se puede jugar dos veces seguidas por un mismo jugador'].
 	].
-	positions detect:[:aPosition | aPosition last = aPoint ]  ifFound:[:aPostion | ^self error: 'Ya hay una ficha en esa posicion']  
-	ifNone:[
-		|aNewPosition|
-		aNewPosition := OrderedCollection new.
-		aNewPosition add: #O.
-		aNewPosition  add: aPoint .
-		self changeTurn.
-		positions add:aNewPosition.
-		self checkWinnerO .
-		] ! !
-
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 19:26:32'!
-placeXAt: aPoint 
+	(self oPieces) size = 3 ifTrue:[^self error:'No se pueden jugar mas de tres fichas'].
+	position := self atPoint: aPoint.
 	
+	(position owner = #NoOwner) 
+		ifTrue:[
+		position owner: #O.
+		self changeTurn.
+		self checkWinnerO 
+		] 
+		ifFalse:[
+			^self error: 'Ya hay una ficha en esa posicion'		
+		]. ! !
+
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 21:38:59'!
+placeXAt: aPoint 
+	^state placeXAt: aPoint.
+	"|position|
 	(aPoint x < 1 or: aPoint x > 3) ifTrue:[^self error:'Posicion invalida'].
 	(aPoint y < 1 or: aPoint y > 3) ifTrue:[^self error:'Posicion invalida'].
 	positions isEmpty 
 	ifFalse:[
 	self currentTurn = #O ifTrue:[^self error:'No se puede jugar dos veces seguidas por un mismo jugador']].
-	positions detect:[:aPosition | aPosition last = aPoint ]  ifFound:[:aPostion | ^self error: 'Ya hay una ficha en esa posicion']  
-	ifNone:[
-		|aNewPosition|
-		aNewPosition := OrderedCollection new.
-		aNewPosition add: #X.
-		aNewPosition  add: aPoint .
+	position := self atPoint: aPoint.
+	
+	self xPieces) size = 3 ifTrue:[^self error:'No se pueden jugar mas de tres fichas'].
+	(position owner = #NoOwner) 
+		ifTrue:[
+		position owner: #X.
 		self changeTurn.
-		positions add:aNewPosition.
-		self checkWinnerX .
-		] ! !
+		self checkWinnerX 
+		] 
+		ifFalse:[
+			^self error: 'Ya hay una ficha en esa posicion'		
+		]. "! !
 
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 19:37:39'!
-players
-	|players|
-	players:= OrderedCollection new.  
-	players add: #X. 
-	players add: #O. 
-	^players.! !
-
-!Tablero methodsFor: 'private' stamp: 'if 11/1/2018 20:48:22'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/1/2018 20:48:22'!
 positions 
 	^positions ! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 18:38:41'!
+!TerniLapelli methodsFor: 'private' stamp: 'eg 11/3/2018 18:38:41'!
 winner
 	^winner.! !
 
-!Tablero methodsFor: 'private' stamp: 'eg 11/3/2018 19:27:29'!
+!TerniLapelli methodsFor: 'private' stamp: 'if 11/5/2018 18:33:05'!
 xPieces
-	^positions select:[:aPosition | (aPosition at:1) = #X]! !
+	^positions select:[:aPosition | (aPosition owner) = #X]! !
+
+
+!classDefinition: #TurnState category: #'Terni-Lapelli'!
+Object subclass: #TurnState
+	instanceVariableNames: 'game'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Terni-Lapelli'!
+
+!TurnState methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 19:11:18'!
+initializeWith: aGame
+	game := aGame.! !
+
+!TurnState methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 19:15:22'!
+nextTurn
+	self subclassResponsibility .! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TurnState class' category: #'Terni-Lapelli'!
+TurnState class
+	instanceVariableNames: ''!
+
+!TurnState class methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 19:09:07'!
+canHandle: aGame
+	self subclassResponsibility .! !
+
+!TurnState class methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 19:08:47'!
+for: aGame
+	^self new initializeWith: aGame.
+	! !
+
+!TurnState class methodsFor: 'as yet unclassified' stamp: 'if 11/5/2018 19:07:37'!
+stateForGame: aGame
+	
+	| TurnState |
+
+	TurnState _ self subclasses detect: [ :TurnStates | TurnStates canHandle: aGame ].
+	
+	^ TurnState for: aGame.! !
