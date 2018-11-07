@@ -739,25 +739,36 @@ Object subclass: #TerniLapelli
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!TerniLapelli methodsFor: 'assertions' stamp: 'nacho 11/6/2018 21:04:11'!
-assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint
+!TerniLapelli methodsFor: 'assertions' stamp: 'if 11/7/2018 17:39:29'!
+assertDistanceBetweenPointsIsValid: aPoint 
+	|distanciaCorrecta |
+	distanciaCorrecta := ((aPoint x) * (aPoint x) ~= 1) and:[(aPoint x) * (aPoint x) ~= 0].
+	distanciaCorrecta ifTrue:[^self error:self class invalidMoveErrorMessage].
+	distanciaCorrecta := ((aPoint y) * (aPoint y) ~= 1) and:[(aPoint y) * (aPoint y) ~= 0].
+	distanciaCorrecta ifTrue:[^self error: self class invalidMoveErrorMessage]. ! !
 
-	|distanciaPunto distanciaCorrecta|
+!TerniLapelli methodsFor: 'assertions' stamp: 'if 11/7/2018 17:43:14'!
+assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint
+	|distanciaPunto |
+	
+	self assertPositionIsValid: aDestinyPoint. 
+	self assertPositionIsValid: aOriginPoint.
+	
 	
 	distanciaPunto := (aDestinyPoint) - (aOriginPoint).
+	
+	self assertDistanceBetweenPointsIsValid: distanciaPunto.
+	self assertMoveCannotBeInDiamondFrom: aOriginPoint to:aDestinyPoint.
+	
+	
+	
+	
 
-	(aDestinyPoint x < 1 or: aDestinyPoint x > 3) ifTrue:[^self error: self class invalidMoveErrorMessage ].
-	(aDestinyPoint y < 1 or: aDestinyPoint y > 3) ifTrue:[^self error: self class invalidMoveErrorMessage ].
-	
-	distanciaCorrecta := ((distanciaPunto x) * (distanciaPunto x) ~= 1) and:[(distanciaPunto x) * (distanciaPunto x) ~= 0].
-	distanciaCorrecta ifTrue:[^self error:self class invalidMoveErrorMessage].
-	distanciaCorrecta := ((distanciaPunto y) * (distanciaPunto y) ~= 1) and:[(distanciaPunto y) * (distanciaPunto y) ~= 0].
-	distanciaCorrecta ifTrue:[^self error: self class invalidMoveErrorMessage]. 
-	
+	! !
+
+!TerniLapelli methodsFor: 'assertions' stamp: 'if 11/7/2018 17:43:36'!
+assertMoveCannotBeInDiamondFrom: aOriginPoint to:aDestinyPoint 
 	((aOriginPoint  x) = (aDestinyPoint y) and:[ (aOriginPoint y) = (aDestinyPoint x)]) ifTrue:[^self error: self class invalidMoveErrorMessage ].
-	
-	
-
 	! !
 
 !TerniLapelli methodsFor: 'assertions' stamp: 'nacho 11/6/2018 20:17:23'!
@@ -880,13 +891,11 @@ placeXWhenPlacingXAt: aPoint
 	! !
 
 
-!TerniLapelli methodsFor: 'win conditions' stamp: 'nacho 11/6/2018 17:42:43'!
+!TerniLapelli methodsFor: 'win conditions' stamp: 'if 11/7/2018 17:45:59'!
 checkWinner: aPlayerPiece 
-	|pieces win|	
+	|pieces|	
 	pieces := self getPiecesOf: aPlayerPiece .	
-	^win := (pieces size) = 3 and:[
-		(self hasCompleteALine: pieces) or:[ self hasCompletedADiagonal: pieces]
-		] .
+	^	(pieces size) = 3 and:[(self hasCompleteALine: pieces) or:[ self hasCompletedADiagonal: pieces]] .
 	! !
 
 !TerniLapelli methodsFor: 'win conditions' stamp: 'eg 11/3/2018 19:25:12'!
