@@ -5,7 +5,7 @@ TestCase subclass: #TerniLapelliTest
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:27:50'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 19:27:50'!
 test01GameStartsWithAnEmptyBoardAndXTurn
 	|game|
 	
@@ -15,7 +15,7 @@ test01GameStartsWithAnEmptyBoardAndXTurn
 	self assert: game currentTurn = #X.
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:30:56'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 19:30:56'!
 test02AfterPlacingXPositionIsOccupiedAndOHasntPlayed
 	|game |
 	game := TerniLapelli new. 	
@@ -28,7 +28,7 @@ test02AfterPlacingXPositionIsOccupiedAndOHasntPlayed
 	self assert: game currentTurn = #O.
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:29:20'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:29:20'!
 test03OCannotStartFirst 
 	|game |
 	game := TerniLapelli new. 
@@ -45,7 +45,7 @@ test03OCannotStartFirst
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:29:14'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:29:14'!
 test04PiecesCannotBePlayedOnOccupiedSpots
 	|game |
 	game := TerniLapelli new. 
@@ -61,7 +61,7 @@ test04PiecesCannotBePlayedOnOccupiedSpots
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:29:39'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:29:39'!
 test05APlayerCannotPlayTwiceInARow
 	|game |
 	game := TerniLapelli new.
@@ -75,7 +75,7 @@ test05APlayerCannotPlayTwiceInARow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:29:57'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:29:57'!
 test06PiecesCannotBePlayedOutOfBounds
 	|game |
 	game := TerniLapelli new.
@@ -89,16 +89,11 @@ test06PiecesCannotBePlayedOutOfBounds
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:30:15'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:44:08'!
 test07APlayerCannotHaveMoreThanThreePiecesOnBoard
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
+	self playersPlaceAlternatively: {1@1.  1@2. 1@3. 2@3. 2@2. 3@3} inGame: game.
 	[game placeXAt: 3@1] on:Error 
 	do:[:anError | 
 		self assert: game numberOfPiecesOnBoard = 6.
@@ -110,16 +105,11 @@ test07APlayerCannotHaveMoreThanThreePiecesOnBoard
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:30:32'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:44:28'!
 test08PlayersCanOnlyMovePiecesTheyOwn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
+	self playersPlaceAlternatively: {1@1.  1@2. 1@3. 2@3. 2@2. 3@3} inGame: game.
 	[game moveXFrom: 3@3 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: game numberOfPiecesOnBoard = 6.
@@ -131,16 +121,11 @@ test08PlayersCanOnlyMovePiecesTheyOwn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:30:45'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:44:37'!
 test09PlayersCannotMovePiecesFromPositionsThatWasntMarked
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
+	self playersPlaceAlternatively: {1@1.  1@2. 1@3. 2@3. 2@2. 3@3} inGame: game.
 	[game moveXFrom: 3@1 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: game numberOfPiecesOnBoard = 6.
@@ -152,16 +137,11 @@ test09PlayersCannotMovePiecesFromPositionsThatWasntMarked
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:30:54'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:44:54'!
 test10PlayersCannotMovePiecesOutOfBounds
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
+	self playersPlaceAlternatively: {1@1.  1@2. 1@3. 2@3. 2@2. 3@3} inGame: game.
 	[game moveXFrom: 1@1 to:0@0] on:Error 
 	do:[:anError | 
 		self assert: game numberOfPiecesOnBoard = 6.
@@ -173,16 +153,11 @@ test10PlayersCannotMovePiecesOutOfBounds
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:31:05'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:45:07'!
 test11PiecesCanOnlyBeMovedToDirectNeighbours
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
+	self playersPlaceAlternatively: {1@1.  1@2. 1@3. 2@3. 2@2. 3@3} inGame: game.
 	[game moveXFrom: 1@1 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: game numberOfPiecesOnBoard = 6.
@@ -194,16 +169,11 @@ test11PiecesCanOnlyBeMovedToDirectNeighbours
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:31:14'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:45:26'!
 test12PiecesCanBeMovedToAValidPosition
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
+	self playersPlaceAlternatively: {1@1.  1@2. 1@3. 2@3. 2@2. 3@3} inGame: game.
 	game moveXFrom: 2@2 to:2@1.
 	
 	[(game winner)] on: Error do:[:anError | 
@@ -218,16 +188,11 @@ test12PiecesCanBeMovedToAValidPosition
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:48:19'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:46:06'!
 test13APlayerWinOnPlacingWhenCompletesFirstColumn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 2@2.
-	game placeXAt: 1@2.
-	game placeOAt: 2@3.
-	game placeXAt: 1@3.
-	 
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@3. 1@3} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 5.
 	self assert: game winner = #X.
 	
@@ -235,17 +200,11 @@ test13APlayerWinOnPlacingWhenCompletesFirstColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:48:31'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:46:36'!
 test14APlayerWinOnPlacingWhenCompletesSecondColumn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 2@2.
-	game placeXAt: 1@2.
-	game placeOAt: 2@3.
-	game placeXAt: 3@1.
-	game placeOAt: 2@1.
-	 
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@3. 3@1. 2@1} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 6.
 	self assert: game winner = #O.
 	
@@ -253,17 +212,11 @@ test14APlayerWinOnPlacingWhenCompletesSecondColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:48:48'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:46:59'!
 test15APlayerWinOnPlacingWhenCompletesThirdColumn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 3@3.
-	game placeXAt: 1@2.
-	game placeOAt: 3@2.
-	game placeXAt: 2@2.
-	game placeOAt: 3@1.
-	 
+	self playersPlaceAlternatively: {1@1.  3@3. 1@2. 3@2. 2@2. 3@1} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 6.
 	self assert: game winner = #O.
 	
@@ -271,17 +224,11 @@ test15APlayerWinOnPlacingWhenCompletesThirdColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:49:26'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:47:25'!
 test16APlayerWinOnPlacingWhenCompletesFirstRow
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 3@3.
-	game placeXAt: 2@1.
-	game placeOAt: 3@2.
-	game placeXAt: 3@1.
-
-	 
+	self playersPlaceAlternatively: {1@1.  3@3. 2@1. 3@2. 3@1} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 5.
 	self assert: game winner = #X.
 	
@@ -289,17 +236,11 @@ test16APlayerWinOnPlacingWhenCompletesFirstRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:49:09'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:47:50'!
 test17APlayerWinOnPlacingWhenCompletesSecondRow
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 2@1.
-	game placeOAt: 2@2.
-	game placeXAt: 1@3.
-	game placeOAt: 3@2.
-	 
+	self playersPlaceAlternatively: {1@1.  1@2. 2@1. 2@2. 1@3. 3@2} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 6.
 	self assert: game winner = #O.
 	
@@ -307,17 +248,11 @@ test17APlayerWinOnPlacingWhenCompletesSecondRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:49:42'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:48:21'!
 test18APlayerWinOnPlacingWhenCompletesThirdRow
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@3.
-	game placeOAt: 1@2.
-	game placeXAt: 2@3.
-	game placeOAt: 2@2.
-	game placeXAt: 3@3.
-	
-	 
+	self playersPlaceAlternatively: {1@3.  1@2. 2@3. 2@2. 3@3} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 5.
 	self assert: game winner = #X.
 	
@@ -325,17 +260,11 @@ test18APlayerWinOnPlacingWhenCompletesThirdRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:49:59'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:48:50'!
 test19APlayerWinOnPlacingWhenCompletesUpDiagonal
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 2@2.
-	game placeOAt: 2@3.
-	game placeXAt: 3@3.
-	
-	 
+	self playersPlaceAlternatively: {1@1.  1@2. 2@2. 2@3. 3@3} inGame: game.	 
 	self assert: game numberOfPiecesOnBoard = 5.
 	self assert: game winner = #X.
 	
@@ -343,17 +272,11 @@ test19APlayerWinOnPlacingWhenCompletesUpDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:53:31'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:49:19'!
 test20APlayerWinOnPlacingWhenCompletesDownDiagonal
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@3.
-	game placeXAt: 1@2.
-	game placeOAt: 2@2.
-	game placeXAt: 3@2.
-	game placeOAt: 3@1.
-		 
+	self playersPlaceAlternatively: {1@1.  1@3. 1@2. 2@2. 3@2. 3@1} inGame: game.		 
 	self assert: game numberOfPiecesOnBoard = 6.
 	self assert: game winner = #O.
 	
@@ -361,16 +284,11 @@ test20APlayerWinOnPlacingWhenCompletesDownDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:53:40'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:49:47'!
 test21APlayerWinOnMovingWhenCompletesFirstColumn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 2@2.
-	game placeXAt: 1@2.
-	game placeOAt: 2@1.
-	game placeXAt: 2@3.
-	game placeOAt: 3@2.
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@1. 2@3. 3@2} inGame: game.
 	game moveXFrom: 2@3 to: 1@3.
 	 
 	self assert: game numberOfPiecesOnBoard = 6.
@@ -380,17 +298,11 @@ test21APlayerWinOnMovingWhenCompletesFirstColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:53:48'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:50:11'!
 test22APlayerWinOnMovingWhenCompletesSecondColumn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 2@2.
-	game placeXAt: 1@2.
-	game placeOAt: 2@1.
-	game placeXAt: 3@1.
-	game placeOAt: 3@3.
-	
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@1. 3@1. 3@3} inGame: game.	
 	game moveXFrom: 3@1 to: 3@2.
 	game moveOFrom: 3@3 to: 2@3.
 	 
@@ -401,17 +313,11 @@ test22APlayerWinOnMovingWhenCompletesSecondColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:53:54'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:50:38'!
 test23APlayerWinOnMovingWhenCompletesThirdColumn
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 3@1.
-	game placeOAt: 1@1.
-	game placeXAt: 3@2.
-	game placeOAt: 2@2.
-	game placeXAt: 2@3.
-	game placeOAt: 1@3.
-	
+	self playersPlaceAlternatively: {3@1.  1@1. 3@2. 2@2. 2@3. 1@3} inGame: game.
 	game moveXFrom: 2@3 to: 3@3.
 	 
 	self assert: game numberOfPiecesOnBoard = 6.
@@ -421,17 +327,11 @@ test23APlayerWinOnMovingWhenCompletesThirdColumn
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:54:04'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:51:05'!
 test24APlayerWinOnMovingWhenCompleteFirstRow
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 2@1.
-	game placeOAt: 1@3.
-	game placeXAt: 3@2.
-	game placeOAt: 2@3.
-	
+	self playersPlaceAlternatively: {1@1.  1@2. 2@1. 1@3. 3@2. 2@3} inGame: game.	
 	game moveXFrom: 3@2 to: 3@1.
 	 
 	self assert: game numberOfPiecesOnBoard = 6.
@@ -441,17 +341,11 @@ test24APlayerWinOnMovingWhenCompleteFirstRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:54:50'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:51:33'!
 test25APlayerWinOnMovingWhenCompleteSecondRow
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@2.
-	game placeOAt: 1@1.
-	game placeXAt: 2@2.
-	game placeOAt: 1@3.
-	game placeXAt: 3@3.
-	game placeOAt: 2@3.
-	
+	self playersPlaceAlternatively: {1@2.  1@1. 2@2. 1@3. 3@3. 2@3} inGame: game.	
 	game moveXFrom: 3@3 to: 3@2.
 	 
 	self assert: game numberOfPiecesOnBoard = 6.
@@ -461,17 +355,11 @@ test25APlayerWinOnMovingWhenCompleteSecondRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:54:44'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:52:11'!
 test26APlayerWinOnMovingWhenCompleteThirdRow
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@3.
-	game placeOAt: 1@1.
-	game placeXAt: 2@3.
-	game placeOAt: 1@2.
-	game placeXAt: 2@2.
-	game placeOAt: 2@1.
-	
+	self playersPlaceAlternatively: {1@3.  1@1. 2@3. 1@2. 2@2. 2@1} inGame: game.
 	game moveXFrom: 2@2 to: 3@3.
 	 
 	self assert: game numberOfPiecesOnBoard = 6.
@@ -481,17 +369,11 @@ test26APlayerWinOnMovingWhenCompleteThirdRow
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:54:40'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:52:35'!
 test27APlayerWinOnMovingWhenCompleteUpDiagonal
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 2@2.
-	game placeOAt: 1@3.
-	game placeXAt: 3@2.
-	game placeOAt: 2@3.
-	
+	self playersPlaceAlternatively: {1@1.  1@2. 2@2. 1@3. 3@2. 2@3} inGame: game.	
 	game moveXFrom: 3@2 to: 3@3.
 	 
 	self assert: game numberOfPiecesOnBoard = 6.
@@ -501,17 +383,11 @@ test27APlayerWinOnMovingWhenCompleteUpDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 19:55:12'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:52:59'!
 test28APlayerWinOnMovingWhenCompleteDownDiagonal
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@2.
-	game placeOAt: 1@3.
-	game placeXAt: 1@1.
-	game placeOAt: 3@1.
-	game placeXAt: 3@3.
-	game placeOAt: 2@3.
-	
+	self playersPlaceAlternatively: {1@2.  1@3. 1@1. 3@1. 3@3. 2@3} inGame: game.
 	game moveXFrom: 3@3 to: 3@2.
 	game moveOFrom: 2@3 to: 2@2.
 	 
@@ -522,17 +398,11 @@ test28APlayerWinOnMovingWhenCompleteDownDiagonal
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:32:11'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:53:25'!
 test29APlayerCannotMoveToTheSamePosition
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@2.
-	game placeOAt: 1@3.
-	game placeXAt: 1@1.
-	game placeOAt: 3@1.
-	game placeXAt: 3@3.
-	game placeOAt: 2@3.
-	
+	self playersPlaceAlternatively: {1@2.  1@3. 1@1. 3@1. 3@3. 2@3} inGame: game.	
 	[game moveXFrom: 3@3 to: 3@3.]
 	on:Error
 	do:[:anError |
@@ -546,16 +416,11 @@ test29APlayerCannotMoveToTheSamePosition
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:32:23'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:53:49'!
 test30APlayerCannotPlayIfGameIsOver
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 2@2.
-	game placeXAt: 1@2.
-	game placeOAt: 2@1.
-	game placeXAt: 2@3.
-	game placeOAt: 3@2.
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@1. 2@3. 3@2} inGame: game.
 	game moveXFrom: 2@3 to: 1@3.
 	[game moveOFrom: 3@2 to: 3@1]
 	on:Error
@@ -569,8 +434,8 @@ test30APlayerCannotPlayIfGameIsOver
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:32:45'!
-test31APlayerCannotMakeAnInvalidMoveWithValidPositions
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:07:12'!
+test31APlayerCannotMakeAMoveIfPlayersHaveNotFinishPlacing
 	|game |
 	game := TerniLapelli new.
 	game placeXAt: 1@1.
@@ -586,17 +451,12 @@ test31APlayerCannotMakeAnInvalidMoveWithValidPositions
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/6/2018 20:33:06'!
-test31APlayerCannotMoveIfPlacingStageHasntFinished
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:06:32'!
+test32APlayerCannotMakeAnInvalidMoveWithValidPositions
 	|game |
 	game := TerniLapelli new.
-	game placeXAt: 1@1.
-	game placeOAt: 1@2.
-	game placeXAt: 1@3.
-	game placeOAt: 2@3.
-	game placeXAt: 2@2.
-	game placeOAt: 3@3. 
-	[game moveXFrom: 1@1 to:3@2] on:Error 
+	self playersPlaceAlternatively: {1@1.  1@2. 2@3. 2@1. 2@2. 3@3} inGame: game.
+	[game moveXFrom: 2@3 to:3@2] on:Error 
 	do:[:anError | 
 		self assert: game numberOfPiecesOnBoard = 6.
 		self assert: game currentTurn = #X.
@@ -604,6 +464,12 @@ test31APlayerCannotMoveIfPlacingStageHasntFinished
 		self assert: anError messageText = game class invalidMoveErrorMessage].
 	
 	! !
+
+
+!TerniLapelliTest methodsFor: 'placing' stamp: 'nacho 11/6/2018 20:43:58'!
+playersPlaceAlternatively: aCollectionOfPoints inGame: game
+
+	aCollectionOfPoints withIndexDo: [:aPoint :anIndex | anIndex odd ifTrue:[ game placeXAt: aPoint ] ifFalse:[game placeOAt: aPoint]].! !
 
 
 !classDefinition: #GameState category: #'Terni-Lapelli'!
@@ -897,8 +763,9 @@ Object subclass: #TerniLapelli
 	poolDictionaries: ''
 	category: 'Terni-Lapelli'!
 
-!TerniLapelli methodsFor: 'assertions' stamp: 'nacho 11/6/2018 20:15:44'!
-assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint 
+!TerniLapelli methodsFor: 'assertions' stamp: 'nacho 11/6/2018 21:04:11'!
+assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint
+
 	|distanciaPunto distanciaCorrecta|
 	
 	distanciaPunto := (aDestinyPoint) - (aOriginPoint).
@@ -909,7 +776,12 @@ assertIsValidMoveFrom: aOriginPoint to: aDestinyPoint
 	distanciaCorrecta := ((distanciaPunto x) * (distanciaPunto x) ~= 1) and:[(distanciaPunto x) * (distanciaPunto x) ~= 0].
 	distanciaCorrecta ifTrue:[^self error:self class invalidMoveErrorMessage].
 	distanciaCorrecta := ((distanciaPunto y) * (distanciaPunto y) ~= 1) and:[(distanciaPunto y) * (distanciaPunto y) ~= 0].
-	distanciaCorrecta ifTrue:[^self error: self class invalidMoveErrorMessage].
+	distanciaCorrecta ifTrue:[^self error: self class invalidMoveErrorMessage]. 
+	
+	((aOriginPoint  x) = (aDestinyPoint y) and:[ (aOriginPoint y) = (aDestinyPoint x)]) ifTrue:[^self error: self class invalidMoveErrorMessage ].
+	
+	
+
 	! !
 
 !TerniLapelli methodsFor: 'assertions' stamp: 'nacho 11/6/2018 20:17:23'!
