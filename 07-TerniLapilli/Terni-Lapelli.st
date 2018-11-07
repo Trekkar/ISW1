@@ -188,214 +188,184 @@ test12PiecesCanBeMovedToAValidPosition
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:46:06'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:49:41'!
 test13APlayerWinOnPlacingWhenCompletesFirstColumn
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@3. 1@3} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 5.
-	self assert: game winner = #X.
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@3. 1@3} inGame: game.
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 5 inGame: game.	 
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:46:36'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:51:13'!
 test14APlayerWinOnPlacingWhenCompletesSecondColumn
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@3. 3@1. 2@1} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #O.
+	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@3. 3@1. 2@1} inGame: game.
+	self assertThatPlayer: #O WonWithNumberOfPiecesOnBoard: 6 inGame: game.	 
+
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:46:59'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:51:45'!
 test15APlayerWinOnPlacingWhenCompletesThirdColumn
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  3@3. 1@2. 3@2. 2@2. 3@1} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #O.
+	self playersPlaceAlternatively: {1@1.  3@3. 1@2. 3@2. 2@2. 3@1} inGame: game.
+	self assertThatPlayer: #O WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:47:25'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:52:04'!
 test16APlayerWinOnPlacingWhenCompletesFirstRow
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  3@3. 2@1. 3@2. 3@1} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 5.
-	self assert: game winner = #X.
+	self playersPlaceAlternatively: {1@1.  3@3. 2@1. 3@2. 3@1} inGame: game.
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 5 inGame: game.
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:47:50'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:52:16'!
 test17APlayerWinOnPlacingWhenCompletesSecondRow
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  1@2. 2@1. 2@2. 1@3. 3@2} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #O.
+	self playersPlaceAlternatively: {1@1.  1@2. 2@1. 2@2. 1@3. 3@2} inGame: game.
+	self assertThatPlayer: #O WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:48:21'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:52:28'!
 test18APlayerWinOnPlacingWhenCompletesThirdRow
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@3.  1@2. 2@3. 2@2. 3@3} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 5.
-	self assert: game winner = #X.
+	self playersPlaceAlternatively: {1@3.  1@2. 2@3. 2@2. 3@3} inGame: game.
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 5 inGame: game.	 
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:48:50'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:52:36'!
 test19APlayerWinOnPlacingWhenCompletesUpDiagonal
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  1@2. 2@2. 2@3. 3@3} inGame: game.	 
-	self assert: game numberOfPiecesOnBoard = 5.
-	self assert: game winner = #X.
-	
+	self playersPlaceAlternatively: {1@1.  1@2. 2@2. 2@3. 3@3} inGame: game.
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 5 inGame: game.	 
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:49:19'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:52:47'!
 test20APlayerWinOnPlacingWhenCompletesDownDiagonal
 	|game |
 	game := TerniLapelli new.
-	self playersPlaceAlternatively: {1@1.  1@3. 1@2. 2@2. 3@2. 3@1} inGame: game.		 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #O.
-	
+	self playersPlaceAlternatively: {1@1.  1@3. 1@2. 2@2. 3@2. 3@1} inGame: game.
+	self assertThatPlayer: #O WonWithNumberOfPiecesOnBoard: 6 inGame: game.		
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:49:47'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:53:01'!
 test21APlayerWinOnMovingWhenCompletesFirstColumn
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@1. 2@3. 3@2} inGame: game.
 	game moveXFrom: 2@3 to: 1@3.
 	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #X.
-	
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:50:11'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:53:17'!
 test22APlayerWinOnMovingWhenCompletesSecondColumn
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@1.  2@2. 1@2. 2@1. 3@1. 3@3} inGame: game.	
 	game moveXFrom: 3@1 to: 3@2.
 	game moveOFrom: 3@3 to: 2@3.
-	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #O.
 	
+	self assertThatPlayer: #O WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:50:38'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:53:26'!
 test23APlayerWinOnMovingWhenCompletesThirdColumn
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {3@1.  1@1. 3@2. 2@2. 2@3. 1@3} inGame: game.
 	game moveXFrom: 2@3 to: 3@3.
 	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #X.
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:51:05'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:53:35'!
 test24APlayerWinOnMovingWhenCompleteFirstRow
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@1.  1@2. 2@1. 1@3. 3@2. 2@3} inGame: game.	
 	game moveXFrom: 3@2 to: 3@1.
 	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #X.
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:51:33'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:53:47'!
 test25APlayerWinOnMovingWhenCompleteSecondRow
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@2.  1@1. 2@2. 1@3. 3@3. 2@3} inGame: game.	
 	game moveXFrom: 3@3 to: 3@2.
 	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #X.
-	
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:52:11'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:53:55'!
 test26APlayerWinOnMovingWhenCompleteThirdRow
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@3.  1@1. 2@3. 1@2. 2@2. 2@1} inGame: game.
 	game moveXFrom: 2@2 to: 3@3.
-	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #X.
-	
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	
 	
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:52:35'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:54:07'!
 test27APlayerWinOnMovingWhenCompleteUpDiagonal
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@1.  1@2. 2@2. 1@3. 3@2. 2@3} inGame: game.	
 	game moveXFrom: 3@2 to: 3@3.
-	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #X.
-	
-	
-	
+	self assertThatPlayer: #X WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	! !
 
-!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:52:59'!
+!TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 21:54:18'!
 test28APlayerWinOnMovingWhenCompleteDownDiagonal
 	|game |
 	game := TerniLapelli new.
 	self playersPlaceAlternatively: {1@2.  1@3. 1@1. 3@1. 3@3. 2@3} inGame: game.
 	game moveXFrom: 3@3 to: 3@2.
 	game moveOFrom: 2@3 to: 2@2.
-	 
-	self assert: game numberOfPiecesOnBoard = 6.
-	self assert: game winner = #O.
-	
-	
-	
+	self assertThatPlayer: #O WonWithNumberOfPiecesOnBoard: 6 inGame: game.
 	! !
 
 !TerniLapelliTest methodsFor: 'tests' stamp: 'nacho 11/6/2018 20:53:25'!
@@ -470,6 +440,12 @@ test32APlayerCannotMakeAnInvalidMoveWithValidPositions
 playersPlaceAlternatively: aCollectionOfPoints inGame: game
 
 	aCollectionOfPoints withIndexDo: [:aPoint :anIndex | anIndex odd ifTrue:[ game placeXAt: aPoint ] ifFalse:[game placeOAt: aPoint]].! !
+
+
+!TerniLapelliTest methodsFor: 'assertions' stamp: 'nacho 11/6/2018 21:48:59'!
+assertThatPlayer: aPlayer WonWithNumberOfPiecesOnBoard: aNumberOfPiecesOnBoard inGame: aGame
+	self assert: aGame numberOfPiecesOnBoard = aNumberOfPiecesOnBoard . 
+	self assert: aGame winner = aPlayer .! !
 
 
 !classDefinition: #GameState category: #'Terni-Lapelli'!
