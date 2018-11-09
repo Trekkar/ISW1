@@ -1073,17 +1073,19 @@ initialize
 	state := PlacingX new initializeFor: self.! !
 
 
-!TerniLapilli methodsFor: 'marking board' stamp: 'JG 11/6/2018 20:34:26'!
+!TerniLapilli methodsFor: 'marking board' stamp: 'nacho 11/9/2018 17:50:41'!
 putOAt: aPosition
 
 	self assertIsInBoardBounds: aPosition .
-	state putOAt: aPosition! !
+	state putOAt: aPosition. 
+	console putOWhenPlacingOAt: aPosition withNextState: state stateName .! !
 
-!TerniLapilli methodsFor: 'marking board' stamp: 'JG 11/6/2018 20:34:12'!
+!TerniLapilli methodsFor: 'marking board' stamp: 'nacho 11/9/2018 17:50:27'!
 putXAt: aPosition
 
 	self assertIsInBoardBounds: aPosition .
-	state putXAt: aPosition! !
+	state putXAt: aPosition. 
+	console putXWhenPlacingXAt: aPosition withNextState: state stateName .! !
 
 
 !TerniLapilli methodsFor: 'marking board - private' stamp: 'HAW 11/8/2018 11:53:04'!
@@ -1093,15 +1095,13 @@ changeStateAfterAdding: aPosition to: positions
 	state := TerniLapilliState for: self
 	! !
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'if 11/8/2018 21:07:35'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'HAW 11/8/2018 11:53:04'!
 putOWhenPlacingOAt: aPosition
 
 	self playerOHasPiecesToPlace.
 	self assertIsFree: aPosition.
 
-	self changeStateAfterAdding: aPosition to: playerOPositions. 
-	
-	console ifNotNil:[ console putOWhenPlacingOAt: aPosition withNextState: (state stateName). ]
+	self changeStateAfterAdding: aPosition to: playerOPositions
 		! !
 
 !TerniLapilli methodsFor: 'marking board - private' stamp: 'JG 10/28/2018 12:39:41'!
@@ -1124,15 +1124,13 @@ putXWhenPlacingOAt: aPoint
 	
 	self error: self class notXTurnErrorMessage! !
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'if 11/8/2018 21:07:19'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'HAW 11/8/2018 11:53:04'!
 putXWhenPlacingXAt: aPosition
 
 	self playerXHasPiecesToPlace.
 	self assertIsFree: aPosition.
 	
-	self changeStateAfterAdding: aPosition to: playerXPositions. 
-		
-	console ifNotNil: [console putXWhenPlacingXAt: aPosition withNextState: (state stateName)]
+	self changeStateAfterAdding: aPosition to: playerXPositions
 	! !
 
 !TerniLapilli methodsFor: 'marking board - private' stamp: 'JG 10/28/2018 12:38:49'!
@@ -1491,3 +1489,289 @@ for: aTerniLapilli
 isFor: aTerniLapilli 
 
 	^self subclassResponsibility ! !
+
+
+!classDefinition: #GameOverState category: #TerniLapilli!
+TerniLapilliState subclass: #GameOverState
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!GameOverState methodsFor: 'testing game result' stamp: 'HAW 11/8/2018 12:15:43'!
+isOver
+
+	^ true.! !
+
+
+!GameOverState methodsFor: 'marking board' stamp: 'HAW 11/8/2018 11:08:57'!
+putOAt: aPosition
+
+	game error: game class canNotPlayWhenGameIsOverErrorMessage ! !
+
+!GameOverState methodsFor: 'marking board' stamp: 'HAW 11/8/2018 11:09:02'!
+putXAt: aPosition
+
+	game error: game class canNotPlayWhenGameIsOverErrorMessage ! !
+
+
+!GameOverState methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
+slideOFrom: aPosition to: anotherPostion
+
+	game error: game class canNotPlayWhenGameIsOverErrorMessage ! !
+
+!GameOverState methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:20'!
+slideXFrom: aPosition to: anotherPostion
+
+	game error: game class canNotPlayWhenGameIsOverErrorMessage ! !
+
+
+!GameOverState methodsFor: 'name' stamp: 'nacho 11/9/2018 17:57:15'!
+stateName 
+	game hasPlayerXWon ifTrue:[^'Juego terminado - ¡Ganó X!!']. 
+	^'Juego terminado - ¡Ganó O!!'! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'GameOverState class' category: #TerniLapilli!
+GameOverState class
+	instanceVariableNames: ''!
+
+!GameOverState class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 12:02:20'!
+isFor: aTerniLapilli 
+
+	^ aTerniLapilli hasPlayerXWon or: [ aTerniLapilli hasPlayerOWon ]! !
+
+
+!classDefinition: #PlayingO category: #TerniLapilli!
+TerniLapilliState subclass: #PlayingO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlayingO methodsFor: 'testing playing turn' stamp: 'HAW 10/25/2017 16:18:36'!
+isPlayingO
+	
+	^true! !
+
+
+!PlayingO methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:20'!
+slideXFrom: aPosition to: anotherPostion
+
+	game slideXWhenPlayingOFrom: aPosition to: anotherPostion .! !
+
+
+!PlayingO methodsFor: 'name' stamp: 'nacho 11/9/2018 17:54:00'!
+stateName 
+	^'Jugando O'.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PlayingO class' category: #TerniLapilli!
+PlayingO class
+	instanceVariableNames: ''!
+
+!PlayingO class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 11:23:04'!
+isFor: aTerniLapilli 
+
+	^false! !
+
+
+!classDefinition: #PlacingO category: #TerniLapilli!
+PlayingO subclass: #PlacingO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlacingO methodsFor: 'marking board' stamp: 'JG 10/28/2018 12:10:45'!
+putOAt: aPosition
+
+	game putOWhenPlacingOAt: aPosition ! !
+
+!PlacingO methodsFor: 'marking board' stamp: 'JG 10/28/2018 13:05:38'!
+putXAt: aPosition
+
+	game putXWhenPlacingOAt: aPosition ! !
+
+
+!PlacingO methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
+slideOFrom: aPosition to: anotherPostion
+
+	game slideOWhenPlacingOFrom: aPosition to: anotherPostion .! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PlacingO class' category: #TerniLapilli!
+PlacingO class
+	instanceVariableNames: ''!
+
+!PlacingO class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 12:07:43'!
+isFor: aTerniLapilli 
+
+	^aTerniLapilli isPlacingX and: [ aTerniLapilli hasPlayerXWon not ] ! !
+
+
+!classDefinition: #SlidingO category: #TerniLapilli!
+PlayingO subclass: #SlidingO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!SlidingO methodsFor: 'marking board' stamp: 'JG 10/28/2018 12:11:14'!
+putOAt: aPosition
+
+	game putOWhenSlidingOAt: aPosition ! !
+
+!SlidingO methodsFor: 'marking board' stamp: 'JG 10/28/2018 12:04:38'!
+putXAt: aPosition
+
+	game putXWhenSlidingXAt: aPosition ! !
+
+
+!SlidingO methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
+slideOFrom: aPosition to: anotherPostion
+ 
+	game slideOWhenSlidingOFrom: aPosition to: anotherPostion .! !
+
+
+!SlidingO methodsFor: 'testing pieces placed' stamp: 'JG 10/28/2018 12:04:38'!
+areAllXsOnTheBoard
+	
+	^true! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SlidingO class' category: #TerniLapilli!
+SlidingO class
+	instanceVariableNames: ''!
+
+!SlidingO class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 11:57:15'!
+isFor: aTerniLapilli 
+
+	^aTerniLapilli isSlidingX and: [ aTerniLapilli hasPlayerXWon not ]! !
+
+
+!classDefinition: #PlayingX category: #TerniLapilli!
+TerniLapilliState subclass: #PlayingX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlayingX methodsFor: 'testing playing turn' stamp: 'HAW 10/25/2017 16:17:23'!
+isPlayingX
+	
+	^true! !
+
+
+!PlayingX methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
+slideOFrom: aPosition to: anotherPostion
+ 
+	game slideOWhenPlayingXFrom: aPosition to: anotherPostion .! !
+
+
+!PlayingX methodsFor: 'name' stamp: 'nacho 11/9/2018 17:54:13'!
+stateName 
+	^'Jugando X'.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PlayingX class' category: #TerniLapilli!
+PlayingX class
+	instanceVariableNames: ''!
+
+!PlayingX class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 11:25:23'!
+isFor: aTerniLapilli 
+
+	^false! !
+
+
+!classDefinition: #PlacingX category: #TerniLapilli!
+PlayingX subclass: #PlacingX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlacingX methodsFor: 'marking board' stamp: 'JG 10/28/2018 13:52:28'!
+putOAt: aPosition
+
+	game putOWhenPlacingXAt: aPosition ! !
+
+!PlacingX methodsFor: 'marking board' stamp: 'JG 10/28/2018 11:58:08'!
+putXAt: aPosition
+
+	game putXWhenPlacingXAt: aPosition ! !
+
+
+!PlacingX methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:20'!
+slideXFrom: aPosition to: anotherPostion
+
+	game slideXWhenPlacingXFrom: aPosition to: anotherPostion .! !
+
+
+!PlacingX methodsFor: 'testing playing turn' stamp: 'HAW 11/8/2018 12:06:28'!
+isPlacingX
+
+	^true! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PlacingX class' category: #TerniLapilli!
+PlacingX class
+	instanceVariableNames: ''!
+
+!PlacingX class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 11:25:47'!
+isFor: aTerniLapilli 
+
+	^aTerniLapilli isPlayingO and: [ aTerniLapilli hasXMorePiecesToPlace]! !
+
+
+!classDefinition: #SlidingX category: #TerniLapilli!
+PlayingX subclass: #SlidingX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!SlidingX methodsFor: 'marking board' stamp: 'JG 10/28/2018 14:51:46'!
+putOAt: aPosition
+
+	game putOWhenSlidingXAt: aPosition ! !
+
+!SlidingX methodsFor: 'marking board' stamp: 'JG 10/28/2018 12:00:12'!
+putXAt: aPosition
+
+	game putXWhenSlidingXAt: aPosition ! !
+
+
+!SlidingX methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:20'!
+slideXFrom: aPosition to: anotherPostion
+ 
+	game slideXWhenSlidingXFrom: aPosition to: anotherPostion .! !
+
+
+!SlidingX methodsFor: 'testing pieces placed' stamp: 'JG 10/28/2018 11:30:43'!
+areAllXsOnTheBoard
+	
+	^true! !
+
+
+!SlidingX methodsFor: 'testing playing turn' stamp: 'HAW 11/8/2018 11:29:47'!
+isSlidingX
+
+	^true! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SlidingX class' category: #TerniLapilli!
+SlidingX class
+	instanceVariableNames: ''!
+
+!SlidingX class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 11:57:36'!
+isFor: aTerniLapilli 
+
+	^aTerniLapilli isPlayingO and: [ aTerniLapilli hasXMorePiecesToPlace not and: [ aTerniLapilli hasPlayerOWon not ]]! !
