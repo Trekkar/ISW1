@@ -146,59 +146,64 @@ itemSellByTheStore
 	
 	^ 'validBook'! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 20:44:54'!
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:19:58'!
 test01CannotCheckoutAnEmptyCart
-	|cashier cart card|
+	|cashier cart card salesBook|
 	
 	cart:= self createCart .
-	cashier := Cashier with: cart. 	
-	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2010 month:January).
+	salesBook := OrderedCollection new.
+	cashier := Cashier with: cart with: salesBook. 	
+	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2020 month:January).
 		
 	[cashier checkoutWithCard: card ]
 	on:Error
 	do:[:anError | 
 		self assert: anError messageText  = 'El carrito está vacío'.
-		self assert: cart isEmpty .]! !
+		self assert: salesBook isEmpty.]! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 20:45:07'!
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:19:52'!
 test02CheckoutTicketOfOneItemCartShouldBeThePriceOfTheItem
-	|cashier cart card finalPrice|
+	|cashier cart card finalPrice salesBook|
 	
 	cart:= self createCart .
 	cart add:1 of:self itemSellByTheStore. 
-	cashier := Cashier with: cart. 	
-	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2010 month:January).
+	salesBook := OrderedCollection new.
+	cashier := Cashier with: cart with: salesBook. 	
+	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2020 month:January).
 		
 	finalPrice := cashier checkoutWithCard: card .
 	
 	self assert: finalPrice equals: 10.! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 20:45:13'!
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:19:45'!
 test03CheckoutTicketShouldBeTheSumOfTheItemsPrices
-	|cashier cart card finalPrice|
+	|cashier cart card finalPrice salesBook|
 	
 	cart:= self createCart .
 	cart add:3 of:self itemSellByTheStore. 
-	cashier := Cashier with: cart. 	
-	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2010 month:January).
+	salesBook := OrderedCollection new.
+	cashier := Cashier with: cart with: salesBook. 	
+	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2020month:January).
 		
 	finalPrice := cashier checkoutWithCard: card .
 	
 	self assert: finalPrice equals: 30.! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 21:03:55'!
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:18:06'!
 test04CannotCheckoutWithAnExpiredCreditCard
-	|cashier cart card|
+	|cashier cart card salesBook|
 	
 	cart:= self createCart .
 	cart add:1 of:self itemSellByTheStore. 
-	cashier := Cashier with: cart. 	
+	salesBook := OrderedCollection new.
+	cashier := Cashier with: cart with: salesBook. 	
 	card:= CreditCard withOwner: 'Ignacio Fernandez' andNumber:39988456 andExpirationDate: (GregorianMonthOfYear year:2010 month:01).
 		
 	[cashier checkoutWithCard: card ]
 	on:Error
 	do:[:anError | 
-		self assert: anError messageText equals: Cashier expiredCardErrorMessage.]! !
+		self assert: anError messageText equals: Cashier expiredCardErrorMessage.
+		self assert: salesBook isEmpty]! !
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -299,16 +304,23 @@ assertCartIsNotEmpty
 assertValidCard: aCard 
 	(aCard isExpiredOn: (FixedGregorianDate today)) ifTrue:[^self error: self class expiredCardErrorMessage]! !
 
-!Cashier methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 20:30:44'!
+!Cashier methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:16:02'!
 checkoutWithCard: aCard
+	|summary|
 	self assertCartIsNotEmpty.
 	self assertValidCard: aCard.
-	
-	^cart summary.! !
+	summary := cart summary .
+	self registerSaleWith: summary .
+	^summary.! !
 
-!Cashier methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 18:44:08'!
-initializeWith: aCart
-	cart := aCart .! !
+!Cashier methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:11:26'!
+initializeWith:aCart with: aSalesBook.
+	cart := aCart . 
+	salesBook := aSalesBook .! !
+
+!Cashier methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:15:34'!
+registerSaleWith: aSummary
+	salesBook add: (Sale with: aSummary).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -324,9 +336,9 @@ cartIsEmptyError
 expiredCardErrorMessage
 	^'La tarjeta está vencida.'! !
 
-!Cashier class methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 19:15:51'!
-with: aCart
-	^self new initializeWith:aCart.! !
+!Cashier class methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:10:16'!
+with: aCart with: aSalesBook
+	^self new initializeWith:aCart with: aSalesBook.! !
 
 
 !classDefinition: #CreditCard category: #TusLibros!
@@ -360,3 +372,25 @@ CreditCard class
 !CreditCard class methodsFor: 'as yet unclassified' stamp: 'if 11/15/2018 20:37:00'!
 withOwner: anOwner andNumber: aNumber andExpirationDate: anExpirationDate
 	^self new initializeWithOwner: anOwner andNumber: aNumber andExpirationDate: anExpirationDate .! !
+
+
+!classDefinition: #Sale category: #TusLibros!
+Object subclass: #Sale
+	instanceVariableNames: 'total'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!Sale methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:16:55'!
+initializeWith: aSummary 
+	total := aSummary ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Sale class' category: #TusLibros!
+Sale class
+	instanceVariableNames: ''!
+
+!Sale class methodsFor: 'as yet unclassified' stamp: 'nacho 11/17/2018 13:16:34'!
+with: aSummary 
+	^self new initializeWith: aSummary.! !
