@@ -123,7 +123,7 @@ test01CanNotCheckoutAnEmptyCart
 			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage.
 			self assert: salesBook isEmpty ]! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:51'!
+!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:53:08'!
 test02CalculatedTotalIsCorrect
 
 	| cart cashier |
@@ -138,7 +138,7 @@ test02CalculatedTotalIsCorrect
 		on: testObjectsFactory today 
 		registeringOn: OrderedCollection new.
 		
-	self assert: cashier checkOut = (testObjectsFactory itemSellByTheStorePrice * 2)! !
+	self assert: (cashier checkOutWithClient) total = (testObjectsFactory itemSellByTheStorePrice * 2)! !
 
 !CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:51'!
 test03CanNotCheckoutWithAnExpiredCreditCart
@@ -161,7 +161,7 @@ test03CanNotCheckoutWithAnExpiredCreditCart
 			self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage.
 			self assert: salesBook isEmpty ]! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 19:04'!
+!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:54:33'!
 test04CheckoutRegistersASale
 
 	| cart cashier salesBook total |
@@ -177,12 +177,12 @@ test04CheckoutRegistersASale
 		on: testObjectsFactory today
 		registeringOn: salesBook.
 		
-	total := cashier checkOut.
+	total := (cashier checkOutWithClient) total.
 					
 	self assert: salesBook size = 1.
-	self assert: salesBook first total = total.! !
+	self assert: (salesBook first ticket)total = total.! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 19:00'!
+!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:54:53'!
 test05CashierChargesCreditCardUsingMerchantProcessor
 
 	| cart cashier salesBook total creditCard debitedAmout debitedCreditCard  |
@@ -202,12 +202,12 @@ test05CashierChargesCreditCardUsingMerchantProcessor
 	debitBehavior := [ :anAmount :aCreditCard | 
 		debitedAmout := anAmount.
 		debitedCreditCard := aCreditCard ].
-	total := cashier checkOut.
+	total := (cashier checkOutWithClient) total .
 					
 	self assert: debitedCreditCard = creditCard.
 	self assert: debitedAmout = total.! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:59'!
+!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:57:15'!
 test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 
 	| cart cashier salesBook creditCard |
@@ -226,7 +226,7 @@ test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 		registeringOn: salesBook.
 		
 	self 
-		should: [cashier checkOut ]
+		should: [cashier checkOutWithClient ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier creditCardHasNoCreditErrorMessage.
@@ -681,12 +681,6 @@ calculateTotal
 	total := cart total.
 	! !
 
-!Cashier methodsFor: 'checkout - private' stamp: 'nacho 11/23/2018 21:05:00'!
-createSale
-
-	^ Sale of: total
-! !
-
 !Cashier methodsFor: 'checkout - private' stamp: 'nacho 11/23/2018 20:37:40'!
 createSaleBy: aCustomer
 
@@ -699,31 +693,17 @@ createTicket
 	ticket:= Ticket withItemsAnQuantities: (cart itemsAndQuanties) andTotal: (cart total).
 	! !
 
-!Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:06'!
+!Cashier methodsFor: 'checkout - private' stamp: 'eg 12/1/2018 17:56:32'!
 debitTotal
 
-	merchantProcessor debit: total from: creditCard.
+	merchantProcessor debit: (ticket total) from: creditCard.
 	! !
-
-!Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:06'!
-registerSale
-
-	salesBook add: self createSale! !
 
 !Cashier methodsFor: 'checkout - private' stamp: 'nacho 11/23/2018 20:24:53'!
 registerSaleBy: aClientId 
 
 	salesBook add: (self createSaleBy: aClientId)! !
 
-
-!Cashier methodsFor: 'checkout' stamp: 'nacho 11/23/2018 20:59:32'!
-checkOut
-
-	self calculateTotal.
-	self debitTotal.
-	self registerSale.
-
-	^ total! !
 
 !Cashier methodsFor: 'checkout' stamp: 'nacho 11/23/2018 20:36:43'!
 checkOutWithClient
@@ -743,19 +723,16 @@ initializeToCheckout: aCart byClientId: clientId charging: aCreditCard throught:
 	merchantProcessor := aMerchantProcessor.
 	salesBook := aSalesBook! !
 
-!Cashier methodsFor: 'initialization' stamp: 'HernanWilkinson 6/17/2013 18:53'!
-initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook
-	
-	cart := aCart.
-	creditCard := aCreditCard.
-	merchantProcessor := aMerchantProcessor.
-	salesBook := aSalesBook! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Cashier class' category: #TusLibros!
 Cashier class
 	instanceVariableNames: ''!
+
+!Cashier class methodsFor: 'utility' stamp: 'eg 12/1/2018 17:46:50'!
+validClient
+	^1.! !
+
 
 !Cashier class methodsFor: 'assertions' stamp: 'HernanWilkinson 6/17/2013 18:22'!
 assertIsNotEmpty: aCart 
@@ -766,23 +743,6 @@ assertIsNotEmpty: aCart
 assertIsNotExpired: aCreditCard on: aDate
 	
 	(aCreditCard isExpiredOn: aDate) ifTrue: [ self error: self canNotChargeAnExpiredCreditCardErrorMessage ]! !
-
-
-!Cashier class methodsFor: 'instance creation' stamp: 'nacho 11/23/2018 20:23:21'!
-toCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
-	
-	self assertIsNotEmpty: aCart.
-	self assertIsNotExpired: aCreditCard on: aDate.
-	
-	^self new initializeToCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
-
-!Cashier class methodsFor: 'instance creation' stamp: 'HernanWilkinson 6/17/2013 18:51'!
-toCheckout: aCart charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
-	
-	self assertIsNotEmpty: aCart.
-	self assertIsNotExpired: aCreditCard on: aDate.
-	
-	^self new initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
 
 
 !Cashier class methodsFor: 'error messages' stamp: 'HernanWilkinson 6/17/2013 18:21'!
@@ -799,6 +759,22 @@ cartCanNotBeEmptyErrorMessage
 creditCardHasNoCreditErrorMessage
 	
 	^'Credit card has no credit'! !
+
+
+!Cashier class methodsFor: 'instance creation' stamp: 'nacho 11/23/2018 20:23:21'!
+toCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
+	
+	self assertIsNotEmpty: aCart.
+	self assertIsNotExpired: aCreditCard on: aDate.
+	
+	^self new initializeToCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
+
+!Cashier class methodsFor: 'instance creation' stamp: 'eg 12/1/2018 17:48:13'!
+toCheckout: aCart charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
+	
+	
+	^self toCheckout: aCart byClientId: (self validClient) charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
+! !
 
 
 !classDefinition: #CreditCard category: #TusLibros!
