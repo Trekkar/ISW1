@@ -123,7 +123,7 @@ test01CanNotCheckoutAnEmptyCart
 			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage.
 			self assert: salesBook isEmpty ]! !
 
-!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:53:08'!
+!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:51'!
 test02CalculatedTotalIsCorrect
 
 	| cart cashier |
@@ -138,7 +138,7 @@ test02CalculatedTotalIsCorrect
 		on: testObjectsFactory today 
 		registeringOn: OrderedCollection new.
 		
-	self assert: (cashier checkOutWithClient) total = (testObjectsFactory itemSellByTheStorePrice * 2)! !
+	self assert: cashier checkOut = (testObjectsFactory itemSellByTheStorePrice * 2)! !
 
 !CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:51'!
 test03CanNotCheckoutWithAnExpiredCreditCart
@@ -161,7 +161,7 @@ test03CanNotCheckoutWithAnExpiredCreditCart
 			self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage.
 			self assert: salesBook isEmpty ]! !
 
-!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:54:33'!
+!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 19:04'!
 test04CheckoutRegistersASale
 
 	| cart cashier salesBook total |
@@ -177,12 +177,12 @@ test04CheckoutRegistersASale
 		on: testObjectsFactory today
 		registeringOn: salesBook.
 		
-	total := (cashier checkOutWithClient) total.
+	total := cashier checkOut.
 					
 	self assert: salesBook size = 1.
-	self assert: (salesBook first ticket)total = total.! !
+	self assert: salesBook first total = total.! !
 
-!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:54:53'!
+!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 19:00'!
 test05CashierChargesCreditCardUsingMerchantProcessor
 
 	| cart cashier salesBook total creditCard debitedAmout debitedCreditCard  |
@@ -202,12 +202,12 @@ test05CashierChargesCreditCardUsingMerchantProcessor
 	debitBehavior := [ :anAmount :aCreditCard | 
 		debitedAmout := anAmount.
 		debitedCreditCard := aCreditCard ].
-	total := (cashier checkOutWithClient) total .
+	total := cashier checkOut.
 					
 	self assert: debitedCreditCard = creditCard.
 	self assert: debitedAmout = total.! !
 
-!CashierTest methodsFor: 'tests' stamp: 'eg 12/1/2018 17:57:15'!
+!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:59'!
 test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 
 	| cart cashier salesBook creditCard |
@@ -226,7 +226,7 @@ test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 		registeringOn: salesBook.
 		
 	self 
-		should: [cashier checkOutWithClient ]
+		should: [cashier checkOut ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier creditCardHasNoCreditErrorMessage.
@@ -248,99 +248,61 @@ debit: anAmount from: aCreditCard
 
 !classDefinition: #TusLibrosSystemTest category: #TusLibros!
 TestCase subclass: #TusLibrosSystemTest
-	instanceVariableNames: 'testObjectsFactory'
+	instanceVariableNames: 'testObjectsFactory tusLibros'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!TusLibrosSystemTest methodsFor: 'setUp' stamp: 'if 11/22/2018 19:52:38'!
+!TusLibrosSystemTest methodsFor: 'setUp' stamp: 'nacho 11/29/2018 20:04:35'!
 setUp
-	testObjectsFactory := StoreTestObjectsFactory new.! !
+	testObjectsFactory := StoreTestObjectsFactory new. 
+	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
+													acceptingItemsOf: (testObjectsFactory defaultCatalog) 
+													debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
+													registeringOn: OrderedCollection new 
+													measuringTime: (ManualClock onNow:(testObjectsFactory today)) .	! !
 
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:53:25'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:05:18'!
 test01TusLibrosSystemCannotCreateCartOnInvalidClientId 
-	|tusLibros cartId cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) andCartBase: cartBase andCartByUserBase: cartByUserBase acceptingItemsOf: (testObjectsFactory defaultCatalog) debitFrom: MerchantProcessor new registeringOn: OrderedCollection new.
-	[cartId := tusLibros createCartWithClientID:(testObjectsFactory invalidClient) andPassword:(testObjectsFactory validPassword ).] 
+	[tusLibros createCartWithClientID:(testObjectsFactory invalidClient) andPassword:(testObjectsFactory validPassword ).] 
 	on:Error 
 	do: [:anError | 
 			self assert: anError messageText = TusLibrosSystem invalidClientErrorMessage ].
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:54:15'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:05:23'!
 test02TusLibrosSystemCannotCreateCartOnInvalidPassword
-	|tusLibros cartId cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) andCartBase: cartBase andCartByUserBase: cartByUserBase acceptingItemsOf: (testObjectsFactory defaultCatalog) debitFrom: MerchantProcessor new registeringOn: OrderedCollection new.
-	[cartId := tusLibros createCartWithClientID:(testObjectsFactory validClient ) andPassword:(testObjectsFactory invalidPassword ).] 
+	[tusLibros createCartWithClientID:(testObjectsFactory validClient ) andPassword:(testObjectsFactory invalidPassword ).] 
 	on:Error 
 	do: [:anError | 
 			self assert: anError messageText = TusLibrosSystem invalidClientPasswordErrorMessage].
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:33:58'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:05:42'!
 test03TusLibrosSystemCanCreateCartOnValidUserAndPassword
-	|tusLibros cartId cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: MerchantProcessor new 
-	registeringOn: OrderedCollection new.
-	
+	|cartId  | 
 	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ). 
-
 	self assert: (tusLibros listCart: cartId) isEmpty! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:55:33'!
-test04TusLibrosSystemCannotAddItemsToNotCreatedCart
-	|tusLibros cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: MerchantProcessor new 
-	registeringOn: OrderedCollection new.
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:05:50'!
+test04TusLibrosSystemCannotAddItemsToNotCreatedCart	
 	[tusLibros add: 1 of: 'validBook' toCart: -1]
 	on: Error 
 	do:[:anError | 
 		anError messageText = TusLibrosSystem cannotAddItemsToInvalidCartErrorMessage].! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:28:36'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:06:06'!
 test05TusLibrosSystemCanAddItemsCreatedCart
-	|tusLibros cartId cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: MerchantProcessor new 
-	registeringOn: OrderedCollection new.
+	|cartId  | 
 	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword: (testObjectsFactory validPassword ). 
 	tusLibros add: 1 of: 'validBook' toCart: cartId.
 	
 	self assert: ((tusLibros listCart: cartId) occurrencesOf: 'validBook') equals: 1.! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:56:38'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:06:45'!
 test06TusLibrosSystemCannotAddItemNotSellByTheStoreToCreatedCart
-	|tusLibros cartId cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: MerchantProcessor new 
-	registeringOn: OrderedCollection new.
+	| cartId  | 
 	cartId := tusLibros createCartWithClientID:1 andPassword:'1234'. 
 	[tusLibros add: 1 of: 'invalidBook' toCart: cartId] 
 	on: Error 
@@ -348,41 +310,24 @@ test06TusLibrosSystemCannotAddItemNotSellByTheStoreToCreatedCart
 		self assert: anError messageText = TusLibrosSystem itemNotInCatalogErrorMessage . 
 		self assert: (tusLibros listCart: cartId ) isEmpty].! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:57:49'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:00'!
 test07TusLibrosSystemCannotListCartOfNotCreatedCart
-	|tusLibros cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: MerchantProcessor new 
-	registeringOn: OrderedCollection new.
 	[tusLibros listCart: 1] 
 	on: Error 
 	do:[:anError | 
 		self assert: anError messageText = TusLibrosSystem cannotListCartOfInvalidCartIdErrorMessage.].! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:26:15'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:08'!
 test08TusLibrosSystemListCartOfEmptyCartIsEmpty
-	|tusLibros cartBase cartByUserBase cartId| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase andCartByUserBase: cartByUserBase 	
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: MerchantProcessor new registeringOn: OrderedCollection new.
+	| cartId| 
 	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword: (testObjectsFactory validPassword ). 
 	tusLibros listCart: cartId .	
 	self assert: (tusLibros listCart: 1) isEmpty .
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/23/2018 19:22:30'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:17'!
 test09TusLibrosSystemListCartReturnsTheRightNumberOfItems
-	|tusLibros cartBase cartByUserBase cartId| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) andCartBase: cartBase andCartByUserBase: cartByUserBase acceptingItemsOf: (testObjectsFactory defaultCatalog) debitFrom: MerchantProcessor new registeringOn: OrderedCollection new.
+	| cartId| 
 	cartId := tusLibros createCartWithClientID:1 andPassword:'1234'. 
 	tusLibros add: 1 of: 'validBook' toCart: cartId.
 	tusLibros add: 2 of: 'validBook' toCart: cartId.
@@ -390,17 +335,10 @@ test09TusLibrosSystemListCartReturnsTheRightNumberOfItems
 	self assert: ((tusLibros listCart: 1) occurrencesOf: 'validBook') equals: 3.
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 20:14:57'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:26'!
 test10TusLibrosSystemCanCheckoutCart
-	|tusLibros cartBase cartByUserBase cartId purchases| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
+	|cartId purchases| 
+
 	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword:(testObjectsFactory validPassword). 
 	tusLibros add: 1 of: 'validBook' toCart: cartId.
 	tusLibros checkOutACart: cartId 
@@ -409,22 +347,13 @@ test10TusLibrosSystemCanCheckoutCart
 				expiringOn: testObjectsFactory notExpiredMonthOfYear. 
 				
 	purchases := tusLibros listPurchasesOfClientId: (testObjectsFactory validClient) andPassword: (testObjectsFactory validPassword ).
-	self deny: purchases isEmpty. 
-	self assert: (purchases includes: (testObjectsFactory saleOfOneValidBook))
+	self deny: (purchases first) isEmpty. 
+	self assert: ((purchases first) includesKey:(testObjectsFactory itemSellByTheStore))
 	
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:59:06'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:34'!
 test11TusLibrosSystemCannotCheckoutWithInvalidCart
-	|tusLibros cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
 	[tusLibros checkOutACart: 1
 				withCreditCardNumber: testObjectsFactory notExpiredCreditCardNumber
 				ownedBy: testObjectsFactory notExpiredCreditCardOwner
@@ -436,20 +365,10 @@ test11TusLibrosSystemCannotCheckoutWithInvalidCart
 	
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:23:24'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:48'!
 test12TusLibrosSystemCannotCheckoutWithEmptyCart
-	|tusLibros cartBase cartByUserBase cartId| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
-	
-	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword: (testObjectsFactory validPassword). 
-	
+	|cartId| 	
+	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword: (testObjectsFactory validPassword). 	
 	[tusLibros checkOutACart: cartId 
 				withCreditCardNumber: testObjectsFactory notExpiredCreditCardNumber
 				ownedBy: testObjectsFactory notExpiredCreditCardOwner
@@ -457,22 +376,14 @@ test12TusLibrosSystemCannotCheckoutWithEmptyCart
 	on:Error 
 	do:[:anError | 
 		self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage . 
-		self assert: (tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword)) isEmpty]
+		self assert: (tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword))first isEmpty]
 	
 	
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:22:12'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:09:56'!
 test13TusLibrosSystemCannotCheckoutWithExpiredCard
-	|tusLibros cartBase cartByUserBase cartId| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
+	|cartId| 
 	
 	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ). 
 	tusLibros add: 1 of: 'validBook' toCart: cartId.
@@ -484,22 +395,13 @@ test13TusLibrosSystemCannotCheckoutWithExpiredCard
 	on:Error 
 	do:[:anError | 
 		self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage . 
-		self assert: (tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword)) isEmpty ]
+		self assert: (tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword)) first isEmpty ]
 	
 	
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 20:00:05'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:03'!
 test14TusLibrosSystemCannotListPurchasesWithInvalidClientId
-	|tusLibros cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
 	tusLibros createCartWithClientID:(testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ).
 	[tusLibros listPurchasesOfClientId: (testObjectsFactory invalidClient ) andPassword:(testObjectsFactory validPassword )] 
 	on:Error 
@@ -507,17 +409,8 @@ test14TusLibrosSystemCannotListPurchasesWithInvalidClientId
 			self assert: anError messageText = TusLibrosSystem invalidClientErrorMessage ]
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 20:00:34'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:09'!
 test15TusLibrosSystemCannotListPurchasesWithInvalidPassword
-	|tusLibros cartBase cartByUserBase| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
 	tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword:(testObjectsFactory validPassword).
 	[tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory invalidPassword )] 
 	on:Error 
@@ -525,45 +418,28 @@ test15TusLibrosSystemCannotListPurchasesWithInvalidPassword
 			self assert: anError messageText = TusLibrosSystem invalidClientPasswordErrorMessage ].
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:19:42'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:21'!
 test16TusLibrosSystemListPurchasesIsEmptyIfCartWasNotCheckedOut
-	|tusLibros cartBase cartByUserBase purchases| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
+	| purchases| 
 	tusLibros createCartWithClientID:(testObjectsFactory validClient ) andPassword:(testObjectsFactory validPassword ).
 	purchases := tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword:(testObjectsFactory validPassword).
 	
-	self assert: purchases isEmpty.
+	self assert: purchases first isEmpty.
 	
 	! !
 
-!TusLibrosSystemTest methodsFor: 'tests' stamp: 'if 11/26/2018 19:17:02'!
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:31'!
 test17TusLibrosSystemCanListPurchasesCorrectly
-	|tusLibros cartBase cartByUserBase purchases cartId1 cartId2| 
-	cartBase := Dictionary  new.
-	cartByUserBase := Dictionary new.
-	tusLibros := TusLibrosSystem usingUserBase: (testObjectsFactory defaultUserBase) 
-	andCartBase: cartBase 
-	andCartByUserBase: cartByUserBase 
-	acceptingItemsOf: (testObjectsFactory defaultCatalog) 
-	debitFrom: (MerchantProcessor withDebitBehavior: [ :anAmount :aCreditCard | ])
-	registeringOn: OrderedCollection new.
-	
+	| purchases cartId1 cartId2| 
 	cartId1 := tusLibros createCartWithClientID: (testObjectsFactory validClient) andPassword: (testObjectsFactory validPassword). 
-	tusLibros add: 1 of: 'validBook' toCart: cartId1.
+	tusLibros add: 1 of: (testObjectsFactory itemSellByTheStore) toCart: cartId1.
 	tusLibros checkOutACart: cartId1 
 				withCreditCardNumber: testObjectsFactory notExpiredCreditCardNumber
 				ownedBy: testObjectsFactory notExpiredCreditCardOwner
 				expiringOn: testObjectsFactory notExpiredMonthOfYear. 
 	
 	cartId2 := tusLibros createCartWithClientID:1 andPassword:'1234'. 
-	tusLibros add: 2 of: 'validBook' toCart: cartId2.
+	tusLibros add: 2 of: (testObjectsFactory itemSellByTheStore) toCart: cartId2.
 	tusLibros checkOutACart: cartId2 
 				withCreditCardNumber: testObjectsFactory notExpiredCreditCardNumber
 				ownedBy: testObjectsFactory notExpiredCreditCardOwner
@@ -571,10 +447,52 @@ test17TusLibrosSystemCanListPurchasesCorrectly
 	
 	purchases := tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ).
 	
-	self assert: (purchases size) equals:2. 
-	self assert: (purchases first = testObjectsFactory saleOfOneValidBook). 
-	self assert: (purchases second = testObjectsFactory saleOfTwoValidBook).
+	self assert: ((purchases first) at: (testObjectsFactory itemSellByTheStore) ) equals: 3.
+	self assert: purchases second equals: 30.
 	
+	! !
+
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:36'!
+test18TusLibrosSystemCannotAddItemsToCartOnExpiredSession
+	| cartId  | 
+	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ). 
+	(tusLibros clock) advanceTime: (testObjectsFactory expiredSessionDuration ).
+	[tusLibros add: 1 of: (testObjectsFactory itemSellByTheStore ) toCart: cartId.]
+	on: Error 
+	do:[:anError | anError messageText = CartSession sessionHasExpiredErrorMessage.
+					(tusLibros clock) revertTime: (testObjectsFactory expiredSessionDuration).
+					self assert: (tusLibros listCart: cartId) isEmpty ].
+
+	! !
+
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:44'!
+test19TusLibrosSystemCannotListCartOnExpiredSession
+	| cartId  | 
+	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ). 
+	(tusLibros clock) advanceTime: (testObjectsFactory expiredSessionDuration ).
+	[tusLibros listCart: cartId ]
+	on: Error 
+	do:[:anError | anError messageText = CartSession sessionHasExpiredErrorMessage.
+					(tusLibros clock) revertTime: (testObjectsFactory expiredSessionDuration).
+					self assert: (tusLibros listCart: cartId) isEmpty ].
+
+	! !
+
+!TusLibrosSystemTest methodsFor: 'tests' stamp: 'nacho 11/29/2018 20:10:50'!
+test20TusLibrosSystemCannotCheckOutCartOnExpiredSession
+	| cartId  | 
+	cartId := tusLibros createCartWithClientID: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword ). 
+	tusLibros add: 1 of: 'validBook' toCart: cartId.
+	(tusLibros clock) advanceTime: (testObjectsFactory expiredSessionDuration ).
+	[tusLibros checkOutACart: cartId 
+				withCreditCardNumber: testObjectsFactory notExpiredCreditCardNumber
+				ownedBy: testObjectsFactory notExpiredCreditCardOwner
+				expiringOn: testObjectsFactory notExpiredMonthOfYear.  ]
+	on: Error 
+	do:[:anError | anError messageText = CartSession sessionHasExpiredErrorMessage.
+					(tusLibros clock) revertTime: (testObjectsFactory expiredSessionDuration).
+					self assert:  (tusLibros listPurchasesOfClientId: (testObjectsFactory validClient ) andPassword: (testObjectsFactory validPassword))first isEmpty].
+
 	! !
 
 
@@ -668,6 +586,57 @@ acceptingItemsOf: aCatalog
 	^self new initializeAcceptingItemsOf: aCatalog ! !
 
 
+!classDefinition: #CartSession category: #TusLibros!
+Object subclass: #CartSession
+	instanceVariableNames: 'cliendId cart tusLibrosSystem lastTimesUsed'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!CartSession methodsFor: 'initialization' stamp: 'nacho 11/29/2018 18:58:25'!
+initializeOwnedBy: aClientId with: aCart in: aTusLibrosSystem  
+	cliendId := aClientId. 
+	cart := aCart. 
+	tusLibrosSystem := aTusLibrosSystem . 
+	lastTimesUsed := self now.
+	! !
+
+
+!CartSession methodsFor: 'clock' stamp: 'nacho 11/29/2018 18:59:10'!
+now 
+	^tusLibrosSystem clock now.! !
+
+
+!CartSession methodsFor: 'owner' stamp: 'nacho 11/29/2018 19:00:09'!
+owner 
+	^cliendId .! !
+
+
+!CartSession methodsFor: 'cart' stamp: 'nacho 11/29/2018 19:00:20'!
+cart 
+	^cart! !
+
+
+!CartSession methodsFor: 'lastTimeUsed' stamp: 'nacho 11/29/2018 19:00:29'!
+lastTimeUsed 
+	^lastTimesUsed .! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'CartSession class' category: #TusLibros!
+CartSession class
+	instanceVariableNames: ''!
+
+!CartSession class methodsFor: 'class initialization' stamp: 'nacho 11/29/2018 18:57:07'!
+ownedBy: aClientId with: cart in: tusLibrosSystem 
+	^self new initializeOwnedBy: aClientId with:cart in: tusLibrosSystem .! !
+
+
+!CartSession class methodsFor: 'error messages' stamp: 'nacho 11/29/2018 19:39:35'!
+sessionHasExpiredErrorMessage 
+	^'Session has expired'! !
+
+
 !classDefinition: #Cashier category: #TusLibros!
 Object subclass: #Cashier
 	instanceVariableNames: 'cart salesBook merchantProcessor creditCard total client ticket'
@@ -681,6 +650,12 @@ calculateTotal
 	total := cart total.
 	! !
 
+!Cashier methodsFor: 'checkout - private' stamp: 'nacho 11/23/2018 21:05:00'!
+createSale
+
+	^ Sale of: total
+! !
+
 !Cashier methodsFor: 'checkout - private' stamp: 'nacho 11/23/2018 20:37:40'!
 createSaleBy: aCustomer
 
@@ -693,17 +668,31 @@ createTicket
 	ticket:= Ticket withItemsAnQuantities: (cart itemsAndQuanties) andTotal: (cart total).
 	! !
 
-!Cashier methodsFor: 'checkout - private' stamp: 'eg 12/1/2018 17:56:32'!
+!Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:06'!
 debitTotal
 
-	merchantProcessor debit: (ticket total) from: creditCard.
+	merchantProcessor debit: total from: creditCard.
 	! !
+
+!Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:06'!
+registerSale
+
+	salesBook add: self createSale! !
 
 !Cashier methodsFor: 'checkout - private' stamp: 'nacho 11/23/2018 20:24:53'!
 registerSaleBy: aClientId 
 
 	salesBook add: (self createSaleBy: aClientId)! !
 
+
+!Cashier methodsFor: 'checkout' stamp: 'nacho 11/23/2018 20:59:32'!
+checkOut
+
+	self calculateTotal.
+	self debitTotal.
+	self registerSale.
+
+	^ total! !
 
 !Cashier methodsFor: 'checkout' stamp: 'nacho 11/23/2018 20:36:43'!
 checkOutWithClient
@@ -723,16 +712,19 @@ initializeToCheckout: aCart byClientId: clientId charging: aCreditCard throught:
 	merchantProcessor := aMerchantProcessor.
 	salesBook := aSalesBook! !
 
+!Cashier methodsFor: 'initialization' stamp: 'HernanWilkinson 6/17/2013 18:53'!
+initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook
+	
+	cart := aCart.
+	creditCard := aCreditCard.
+	merchantProcessor := aMerchantProcessor.
+	salesBook := aSalesBook! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Cashier class' category: #TusLibros!
 Cashier class
 	instanceVariableNames: ''!
-
-!Cashier class methodsFor: 'utility' stamp: 'eg 12/1/2018 17:46:50'!
-validClient
-	^1.! !
-
 
 !Cashier class methodsFor: 'assertions' stamp: 'HernanWilkinson 6/17/2013 18:22'!
 assertIsNotEmpty: aCart 
@@ -743,6 +735,23 @@ assertIsNotEmpty: aCart
 assertIsNotExpired: aCreditCard on: aDate
 	
 	(aCreditCard isExpiredOn: aDate) ifTrue: [ self error: self canNotChargeAnExpiredCreditCardErrorMessage ]! !
+
+
+!Cashier class methodsFor: 'instance creation' stamp: 'nacho 11/23/2018 20:23:21'!
+toCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
+	
+	self assertIsNotEmpty: aCart.
+	self assertIsNotExpired: aCreditCard on: aDate.
+	
+	^self new initializeToCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
+
+!Cashier class methodsFor: 'instance creation' stamp: 'HernanWilkinson 6/17/2013 18:51'!
+toCheckout: aCart charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
+	
+	self assertIsNotEmpty: aCart.
+	self assertIsNotExpired: aCreditCard on: aDate.
+	
+	^self new initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
 
 
 !Cashier class methodsFor: 'error messages' stamp: 'HernanWilkinson 6/17/2013 18:21'!
@@ -760,21 +769,52 @@ creditCardHasNoCreditErrorMessage
 	
 	^'Credit card has no credit'! !
 
+
+!classDefinition: #Clock category: #TusLibros!
+Object subclass: #Clock
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
 
-!Cashier class methodsFor: 'instance creation' stamp: 'nacho 11/23/2018 20:23:21'!
-toCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
-	
-	self assertIsNotEmpty: aCart.
-	self assertIsNotExpired: aCreditCard on: aDate.
-	
-	^self new initializeToCheckout: aCart byClientId: clientId charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
+!Clock methodsFor: 'time' stamp: 'nacho 11/29/2018 19:05:57'!
+now 
+	self subclassResponsibility .! !
 
-!Cashier class methodsFor: 'instance creation' stamp: 'eg 12/1/2018 17:48:13'!
-toCheckout: aCart charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
-	
-	
-	^self toCheckout: aCart byClientId: (self validClient) charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
-! !
+
+!classDefinition: #ManualClock category: #TusLibros!
+Clock subclass: #ManualClock
+	instanceVariableNames: 'now'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!ManualClock methodsFor: 'initialization' stamp: 'nacho 11/29/2018 19:21:10'!
+initializeWithNow: aTime 
+	now := aTime ! !
+
+
+!ManualClock methodsFor: 'time' stamp: 'nacho 11/29/2018 19:07:54'!
+advanceTime: aTime 
+	now:= now + aTime! !
+
+!ManualClock methodsFor: 'time' stamp: 'nacho 11/29/2018 19:07:24'!
+now 
+	^now! !
+
+!ManualClock methodsFor: 'time' stamp: 'nacho 11/29/2018 19:08:41'!
+revertTime: aTime 
+	now:= now - aTime! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ManualClock class' category: #TusLibros!
+ManualClock class
+	instanceVariableNames: ''!
+
+!ManualClock class methodsFor: 'class initialization' stamp: 'nacho 11/29/2018 19:21:37'!
+onNow: aTime 
+	^self new initializeWithNow: aTime.! !
 
 
 !classDefinition: #CreditCard category: #TusLibros!
@@ -1052,6 +1092,15 @@ validClient
 validPassword 
 	^'1234'! !
 
+
+!StoreTestObjectsFactory methodsFor: 'session' stamp: 'nacho 11/29/2018 19:53:09'!
+expiredSessionDuration 
+	^(Duration minutes: 31).! !
+
+!StoreTestObjectsFactory methodsFor: 'session' stamp: 'nacho 11/29/2018 19:53:17'!
+sessionDuration 
+	^(Duration minutes: 30).! !
+
 
 !classDefinition: #Ticket category: #TusLibros!
 Object subclass: #Ticket
@@ -1094,7 +1143,7 @@ withItemsAnQuantities: aBag andTotal: aTotal
 
 !classDefinition: #TusLibrosSystem category: #TusLibros!
 Object subclass: #TusLibrosSystem
-	instanceVariableNames: 'userBase cartBase cartByUserBase catalog lastCartId merchantProcessor salesBook'
+	instanceVariableNames: 'userBase catalog lastCartId merchantProcessor salesBook sessions clock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
@@ -1105,13 +1154,14 @@ createCartId
 	^lastCartId.! !
 
 
-!TusLibrosSystem methodsFor: 'initialization' stamp: 'nacho 11/23/2018 19:24:54'!
-initializeWithUserBase: aUserBase andCartBase: aCartBase andCartByUserBase: aCartByUserBase acceptingItemsOf: aCatalog debitFrom: aMerchantProcessor registeringOn: aSalesBook 
+!TusLibrosSystem methodsFor: 'initialization' stamp: 'nacho 11/29/2018 19:27:29'!
+initializeWithUserBase: aUserBase acceptingItemsOf: aCatalog debitFrom: aMerchantProcessor registeringOn: aSalesBook measuringTime: aTime  
+	
 	userBase := aUserBase .
-	cartBase := aCartBase. 
-	cartByUserBase := aCartByUserBase .  
 	catalog := aCatalog .
 	merchantProcessor := aMerchantProcessor .
+	clock := aTime.
+	sessions := Dictionary new.
 	salesBook := aSalesBook .
 	lastCartId := 0.! !
 
@@ -1124,32 +1174,32 @@ assertClient: aClientId hasPassword: aPassword
 assertClientId: aClientId 
 	userBase at:aClientId ifAbsent:[^self error: 'Client does not exist.']! !
 
+!TusLibrosSystem methodsFor: 'assertions' stamp: 'nacho 11/29/2018 19:47:46'!
+assertSessionHasNotExpired: aSession 
+	(clock now minute - aSession lastTimeUsed minute) > 30 ifTrue:[^ self error: CartSession sessionHasExpiredErrorMessage ]! !
+
 !TusLibrosSystem methodsFor: 'assertions' stamp: 'if 11/26/2018 19:47:25'!
 authenticateWithClientId: aClientId andPassword: aPassword 
 	self assertClientId: aClientId . 
 	self assertClient: aClientId hasPassword: aPassword. ! !
 
 
-!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/23/2018 18:04:14'!
+!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/29/2018 19:40:31'!
 add: aQuantity of: aBook toCart: cartId 
-	|cart|
-	cart := cartBase at: cartId ifAbsent:[^self error:'Cannot add items to invalid cart.']. 
-	cart add: aQuantity of: aBook.
+	|session|
+	session := sessions at: cartId ifAbsent:[^self error:'Cannot add items to invalid cart.'].
+	self assertSessionHasNotExpired: session.
+	(session cart) add: aQuantity of: aBook.
 ! !
 
-!TusLibrosSystem methodsFor: 'protocol' stamp: 'if 11/26/2018 18:49:03'!
+!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/29/2018 19:54:32'!
 checkOutACart: cartId withCreditCardNumber: aCreditCardNumber ownedBy: aCreditCardOwner expiringOn: aMonthOfYear 
-	|cashier cart clientId|
+	|cashier session|
 	
-	cart:= cartBase at: cartId ifAbsent:[^self error: 'Cannot checkout with invalid cart' ].
-	
-	(cartByUserBase keys) detect:[:aClientId | (cartByUserBase at: aClientId) includes:cartId] 
-		ifFound:[:aClientId| 			
-			clientId := aClientId ]
-		ifNone:[^self error: 'Cannot checkout with invalid cart' ].
-			
-	cashier := Cashier toCheckout: cart
-				byClientId: clientId 
+	session := sessions at: cartId ifAbsent:[^self error: 'Cannot checkout with invalid cart' ].
+	self assertSessionHasNotExpired: session.			
+	cashier := Cashier toCheckout: session cart
+				byClientId: session owner 
 				charging: (CreditCard expiringOn: aMonthOfYear) 
 				throught: merchantProcessor 
 				on: Date today 
@@ -1160,36 +1210,63 @@ checkOutACart: cartId withCreditCardNumber: aCreditCardNumber ownedBy: aCreditCa
 
 ! !
 
-!TusLibrosSystem methodsFor: 'protocol' stamp: 'if 11/26/2018 19:47:47'!
+!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/29/2018 19:20:29'!
 createCartWithClientID: aClientId andPassword: aPassword 
-	|cart cartId|
+	|cart cartId |
 	self authenticateWithClientId: aClientId andPassword: aPassword .
 	cart := Cart acceptingItemsOf: catalog .
 	cartId := self createCartId.
-	cartByUserBase at: aClientId 
-	ifPresent:[:clientCarts| clientCarts add: cartId] 
-	ifAbsent:[				|carts| 
-							carts:= OrderedCollection new.
-							carts add: cartId.
-							cartByUserBase at: aClientId put: carts.].
-	cartBase at: cartId put: cart. 
+	sessions at: cartId put: (CartSession ownedBy: aClientId with: cart in: self).
 	^cartId .
 	
 	
 ! !
 
-!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/23/2018 18:33:59'!
+!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/29/2018 19:54:40'!
 listCart: aCartId 
-	|cart|
-	cart := cartBase at: aCartId ifAbsent:[^self error: 'Cannot list cart of invalid cart id'].
-	^cart itemsAndQuanties .
+	|session|
+	session := sessions at: aCartId ifAbsent:[^self error: 'Cannot list cart of invalid cart id'].
+	self assertSessionHasNotExpired: session.
+	^(session cart) itemsAndQuanties .
 	! !
 
-!TusLibrosSystem methodsFor: 'protocol' stamp: 'if 11/26/2018 19:48:11'!
+!TusLibrosSystem methodsFor: 'protocol' stamp: 'nacho 11/29/2018 18:44:57'!
 listPurchasesOfClientId: aClientId andPassword: aClientPassword 
-	self authenticateWithClientId: aClientId andPassword: aClientPassword. 
-	^salesBook select:[:aSale | aSale owner = aClientId ].
+	|sales purchases|
+	
+	self authenticateWithClientId: aClientId andPassword: aClientPassword. 	
+	purchases := Dictionary new.	
+	sales := salesBook select:[:aSale | aSale owner = aClientId ].	
+	^self listPurchasesOf: sales.	
+	
+	
+	
+	
+	
 ! !
+
+
+!TusLibrosSystem methodsFor: 'auxiliary' stamp: 'nacho 11/29/2018 18:45:38'!
+listPurchasesOf: aCollectionOfSales 
+	|totalAmount itemsOfAllPurchases uniquePurchasesItems purchases|
+	
+	purchases:= Dictionary new.
+
+	totalAmount := aCollectionOfSales inject: 0 into:[:anAmount :aSale | anAmount + (aSale ticket) total].
+		
+	itemsOfAllPurchases:= aCollectionOfSales inject: Bag new into:[:itemsAcumulated :aSale | itemsAcumulated addAll: (aSale ticket items).  itemsAcumulated ]. 
+	
+	uniquePurchasesItems := itemsOfAllPurchases asSet.
+	
+	uniquePurchasesItems do:[:anItem| purchases at:anItem put:(itemsOfAllPurchases occurrencesOf: anItem)]. 
+	
+	^ {purchases. totalAmount }
+	! !
+
+
+!TusLibrosSystem methodsFor: 'clock' stamp: 'nacho 11/29/2018 19:09:23'!
+clock 
+	^clock! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1197,9 +1274,9 @@ listPurchasesOfClientId: aClientId andPassword: aClientPassword
 TusLibrosSystem class
 	instanceVariableNames: ''!
 
-!TusLibrosSystem class methodsFor: 'initialization' stamp: 'nacho 11/23/2018 19:23:44'!
-usingUserBase: userBase andCartBase: aCartBase andCartByUserBase: aCartByUserBase acceptingItemsOf: aCatalog debitFrom: aMerchantProcessor registeringOn: salesBook 
-	^self new initializeWithUserBase: userBase andCartBase: aCartBase andCartByUserBase: aCartByUserBase acceptingItemsOf: aCatalog debitFrom: aMerchantProcessor registeringOn: salesBook! !
+!TusLibrosSystem class methodsFor: 'initialization' stamp: 'nacho 11/29/2018 19:26:14'!
+usingUserBase: userBase acceptingItemsOf: aCatalog debitFrom: aMerchantProcessor registeringOn: salesBook measuringTime: aTime    
+	^self new initializeWithUserBase: userBase acceptingItemsOf: aCatalog debitFrom: aMerchantProcessor registeringOn: salesBook measuringTime: aTime! !
 
 
 !TusLibrosSystem class methodsFor: 'error messages' stamp: 'if 11/26/2018 19:55:10'!
